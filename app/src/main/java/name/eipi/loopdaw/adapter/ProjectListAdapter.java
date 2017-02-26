@@ -2,10 +2,12 @@ package name.eipi.loopdaw.adapter;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import java.util.List;
 
+import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.model.Project;
 
 /**
@@ -14,27 +16,49 @@ import name.eipi.loopdaw.model.Project;
 
 public class ProjectListAdapter extends ArrayAdapter<Project> {
 
-    public ProjectListAdapter(Context context, View.OnClickListener listener, List<Project> projects) {
-        super(context, R.layout.projectLineItem, projects);
+    private Context context;
+    private View.OnClickListener deleteListener;
+    public List<Project> projectList;
+
+    public ProjectListAdapter(Context context, View.OnClickListener deleteListener, List<Project> projectList)
+    {
+        super(context, R.layout.project_line_item, projectList);
+
+        this.context = context;
+        this.deleteListener = deleteListener;
+        this.projectList = projectList;
     }
 
-    public ProjectListAdapter(Context context, int resource, int textViewResourceId) {
-        super(context, resource, textViewResourceId);
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        ProjectItem item = new ProjectItem(context, parent, deleteListener,
+                projectList.get(position));
+        return item.view;
     }
 
-    public ProjectListAdapter(Context context, int resource, Project[] objects) {
-        super(context, resource, objects);
+    @Override
+    public int getCount()
+    {
+        return projectList.size();
     }
 
-    public ProjectListAdapter(Context context, int resource, int textViewResourceId, Project[] objects) {
-        super(context, resource, textViewResourceId, objects);
+    @Override
+    public Project getItem(int position)
+    {
+        return projectList.get(position);
     }
 
-    public ProjectListAdapter(Context context, int resource, List<Project> objects) {
-        super(context, resource, objects);
+    @Override
+    public long getItemId(int position)
+    {
+        return position;
     }
 
-    public ProjectListAdapter(Context context, int resource, int textViewResourceId, List<Project> objects) {
-        super(context, resource, textViewResourceId, objects);
+    @Override
+    public int getPosition(Project c)
+    {
+        return projectList.indexOf(c);
     }
+
 }

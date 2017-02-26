@@ -1,4 +1,4 @@
-package name.eipi.loopdaw;
+package name.eipi.loopdaw.activity;
 
 
 import android.annotation.TargetApi;
@@ -21,6 +21,9 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 
 import java.util.List;
+
+import name.eipi.loopdaw.AppCompatPreferenceActivity;
+import name.eipi.loopdaw.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

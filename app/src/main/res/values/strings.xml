@@ -71,6 +71,17 @@
 
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
-
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <!--Begin App Info-->
+    <string name="appDesc">Use LoopDAW to sequence and arrange multipart audio for composition or live performance.</string>
+    <string name="appMoreInfo">For more information about LoopDAW or to provide feedback please visit our website.</string>
+    <!--End App Info-->
+
+
+    <string name="projectNameLbl">Name : </string>
+    <string name="recentlyViewedListEmptyMessage">No projects created yet!</string>
+    <string name="appWebsite">www.eipi.name</string>
+
 </resources>
+

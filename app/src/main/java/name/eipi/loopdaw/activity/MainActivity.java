@@ -1,9 +1,11 @@
-package name.eipi.loopdaw;
+package name.eipi.loopdaw.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
+
+import name.eipi.loopdaw.NavigationUtils;
+import name.eipi.loopdaw.R;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,4 +30,9 @@ public class MainActivity extends AppCompatActivity {
     public void actionSettings(View view) {
         NavigationUtils.goToActivity(this, SettingsActivity.class, null);
     }
+
+    public void actionBrowse(View view) {
+        NavigationUtils.goToActivity(this, BrowseActivity.class, null);
+    }
+
 }

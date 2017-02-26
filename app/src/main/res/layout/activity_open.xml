@@ -8,6 +8,39 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="name.eipi.loopdaw.OpenActivity">
+    tools:context="name.eipi.loopdaw.activity.OpenActivity">
+
+    <FrameLayout
+        android:id="@+id/fragment_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footerLinearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/recentlyAddedListEmpty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="@string/recentlyViewedListEmptyMessage"
+        android:textColor="@color/appFontColor"
+        android:layout_above="@+id/footerLinearLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <LinearLayout
+        android:id="@+id/footerLinearLayout"
+        style="@style/footer"
+        android:background="@color/bannerBGColor"
+        android:layout_width="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentStart="true">
+
+    </LinearLayout>
 
 </RelativeLayout>
