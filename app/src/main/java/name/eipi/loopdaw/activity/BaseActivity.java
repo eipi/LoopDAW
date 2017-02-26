@@ -12,10 +12,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.fragment.ProjectFragment;
+import name.eipi.loopdaw.fragment.CustomWaveformFragment;
+import name.eipi.loopdaw.fragment.TrackFragment;
 import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.model.Project;
 
@@ -28,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public LoopDAWApp app;
     protected Bundle activityInfo;
     protected ProjectFragment projectFragment;
+    protected TrackFragment trackFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

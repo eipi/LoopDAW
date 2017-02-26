@@ -8,36 +8,36 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import name.eipi.loopdaw.R;
-import name.eipi.loopdaw.model.Project;
+import name.eipi.loopdaw.model.Track;
 
 /**
- * Created by avd1 on 07/02/2017.
+ * Created by Damien on 26/02/2017.
  */
 
-public class ProjectItem {
+public class TrackItem {
 
     View view;
 
-    public ProjectItem(Context context, ViewGroup parent,
-                      View.OnClickListener deleteListener, Project project)
+    public TrackItem(Context context, ViewGroup parent,
+                       View.OnClickListener deleteListener, Track track)
     {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view = inflater.inflate(R.layout.project_line_item, parent, false);
-        view.setId(project.getId());
+        view = inflater.inflate(R.layout.track_line_item, parent, false);
+        view.setId(track.getId());
 
-        updateControls(project);
+        updateControls(track);
 
         ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
-        imgDelete.setTag(project);
+        imgDelete.setTag(track);
         imgDelete.setOnClickListener(deleteListener);
     }
 
-    private void updateControls(Project project) {
-        ((TextView) view.findViewById(R.id.rowProjectName)).setText(project.getName());
+    private void updateControls(Track track) {
+        ((TextView) view.findViewById(R.id.rowTrackName)).setText("Track" + track.getId());
         ImageView imgIcon = (ImageView) view.findViewById(R.id.RowImage);
 
-        if (project.isFavourite() == true) {
+        if (track.getFileName() != null) {
             imgIcon.setImageResource(R.drawable.ic_favourite_on);
         } else {
             imgIcon.setImageResource(R.drawable.ic_favourite_off);

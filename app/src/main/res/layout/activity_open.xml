@@ -11,7 +11,7 @@
     tools:context="name.eipi.loopdaw.activity.OpenActivity">
 
     <FrameLayout
-        android:id="@+id/fragment_layout"
+        android:id="@+id/project_fragment_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/footerLinearLayout"

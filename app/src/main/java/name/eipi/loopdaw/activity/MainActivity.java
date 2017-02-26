@@ -23,10 +23,6 @@ public class MainActivity extends AppCompatActivity {
         NavigationUtils.goToActivity(this, OpenActivity.class, null);
     }
 
-    public void actionManage(View view) {
-        NavigationUtils.goToActivity(this, ManageActivity.class, null);
-    }
-
     public void actionSettings(View view) {
         NavigationUtils.goToActivity(this, SettingsActivity.class, null);
     }

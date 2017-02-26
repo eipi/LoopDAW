@@ -20,16 +20,23 @@ public class OpenActivity extends BaseActivity {
 
         recentList = (TextView) findViewById(R.id.recentlyAddedListEmpty);
 
-        // todo -> refactor to avoid duplication in ManageActivity.
         projectFragment = ProjectFragment.newInstance();
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.fragment_layout, projectFragment);
+        transaction.add(R.id.project_fragment_layout, projectFragment);
         transaction.commit();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if(app.projectList.isEmpty()) {
             recentList.setText(getString(R.string.recentlyViewedListEmptyMessage));
         } else {
             recentList.setText(null);
         }
+
     }
+
 }

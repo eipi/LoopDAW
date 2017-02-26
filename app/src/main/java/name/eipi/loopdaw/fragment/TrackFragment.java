@@ -9,29 +9,34 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import java.io.File;
+
 import name.eipi.loopdaw.activity.BaseActivity;
-import name.eipi.loopdaw.activity.EditActivity;
 import name.eipi.loopdaw.activity.OpenActivity;
 import name.eipi.loopdaw.activity.RecordActivity;
+import name.eipi.loopdaw.activity.ViewerActivity;
 import name.eipi.loopdaw.adapter.ProjectListAdapter;
+import name.eipi.loopdaw.adapter.TrackListAdapter;
 import name.eipi.loopdaw.model.Project;
+import name.eipi.loopdaw.model.Track;
 
 /**
  * Created by avd1 on 07/02/2017.
  */
 
-public class ProjectFragment extends ListFragment implements View.OnClickListener {
+public class TrackFragment extends ListFragment implements View.OnClickListener {
 
-    private static final ProjectFragment INSTANCE;
+    private static final TrackFragment INSTANCE;
     protected BaseActivity activity;
-    public static ProjectListAdapter listAdapter;
+    public static TrackListAdapter listAdapter;
     protected ListView listView;
+    private Project project;
 
     static {
-        INSTANCE = new ProjectFragment();
+        INSTANCE = new TrackFragment();
     }
 
-    public ProjectFragment getInstance() {
+    public TrackFragment getInstance() {
         return INSTANCE;
     }
 
@@ -39,16 +44,17 @@ public class ProjectFragment extends ListFragment implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        listAdapter = new ProjectListAdapter(activity, this, activity.app.projectList);
+        listAdapter = new TrackListAdapter(activity, this, project.getClips());
         setListAdapter(listAdapter);
     }
 
-    public ProjectFragment() {
+    public TrackFragment() {
         // Required empty public constructor
     }
 
-    public static ProjectFragment newInstance() {
-        ProjectFragment fragment = new ProjectFragment();
+    public static TrackFragment newInstance(Project project) {
+        TrackFragment fragment = new TrackFragment();
+        fragment.project = project;
         return fragment;
     }
 
@@ -69,15 +75,15 @@ public class ProjectFragment extends ListFragment implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        if (view.getTag() instanceof Project)
+        if (view.getTag() instanceof Track)
         {
-            onProjectDelete ((Project) view.getTag());
+            onProjectDelete ((Track) view.getTag());
         }
     }
 
-    private void onProjectDelete(final Project project)
+    private void onProjectDelete(final Track track)
     {
-        String stringName = project.getName();
+        int stringName = track.getId();
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage("Are you sure you want to Delete the \'Project\' " + stringName + "?");
         builder.setCancelable(false);
@@ -86,8 +92,8 @@ public class ProjectFragment extends ListFragment implements View.OnClickListene
         {
             public void onClick(DialogInterface dialog, int id)
             {
-                activity.app.projectList.remove(project); // remove from our list
-                listAdapter.projectList.remove(project); // update adapters data
+                project.getClips().remove(track); // remove from our list
+                listAdapter.trackList.remove(track); // update adapters data
                 listAdapter.notifyDataSetChanged(); // refresh adapter
             }
         }).setNegativeButton("No", new DialogInterface.OnClickListener()
@@ -105,12 +111,21 @@ public class ProjectFragment extends ListFragment implements View.OnClickListene
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Bundle activityInfo = new Bundle(); // Creates a new Bundle object
-        int itemId = activity.app.projectList.get(position).getId();
-        activityInfo.putInt("projectID", itemId);
+        int projId = project.getId();
+        activityInfo.putInt("projectID", projId);
+        activityInfo.putInt("trackID", position);
 
-        Intent goEdit = new Intent(getActivity(), EditActivity.class); // Creates a new Intent
-    /* Add the bundle to the intent here */
-        goEdit.putExtras(activityInfo);
-        getActivity().startActivity(goEdit); // Launch the Intent
+        String fName = project.getClips().get(position).getFileName();
+        File file;
+
+        if (fName != null && (file = new File(fName)).exists()) {
+            Intent goView = new Intent(getActivity(), ViewerActivity.class);
+            goView.putExtras(activityInfo);
+            getActivity().startActivity(goView); // Launch the Intent
+        } else {
+            Intent goRecord = new Intent(getActivity(), RecordActivity.class);
+            goRecord.putExtras(activityInfo);
+            getActivity().startActivity(goRecord); // Launch the Intent
+        }
     }
 }

@@ -8,10 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 import java.io.File;
@@ -19,8 +19,12 @@ import java.io.File;
 import name.eipi.loopdaw.AudioSession;
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.fragment.CustomWaveformFragment;
+import name.eipi.loopdaw.fragment.TrackFragment;
+import name.eipi.loopdaw.main.LoopDAWApp;
+import name.eipi.loopdaw.model.Project;
+import name.eipi.loopdaw.model.Track;
 
-public class RecordActivity extends AppCompatActivity {
+public class RecordActivity extends BaseActivity {
 
     // Requesting permission to RECORD_AUDIO
     private boolean permissionToRecordAccepted = false;
@@ -28,13 +32,12 @@ public class RecordActivity extends AppCompatActivity {
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
 
     private AudioSession audioSession;
-    private CustomWaveformFragment customWaveformFragment;
-
-    private String baseFileDir;
-
 
     boolean mStartRecording = true;
     boolean mStartPlaying = true;
+
+    private Project project;
+    private Track track;
 
 
     @Override
@@ -49,44 +52,21 @@ public class RecordActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
         audioSession = AudioSession.getInstance();
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.record_container, new CustomWaveformFragment())
-//                    .commit();
-//        }
+        Bundle extras = getIntent().getExtras();
+        int projectContext = extras.getInt("projectID", -1);
+        int trackContext = extras.getInt("trackID", -1);
+        if (projectContext != -1) {
+            project = ((LoopDAWApp) getApplication()).projectList.get(projectContext);
+            track = (Track) project.getClips().get(trackContext);
+        }
+
         ActivityCompat.requestPermissions(this, permissions, REQUEST_RECORD_AUDIO_PERMISSION);
-
-//        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View view = inflater.inflate(R.layout.activity_record, null);
-//        FrameLayout ll = (FrameLayout) view.findViewById(R.id.record_container);
-        baseFileDir = getExternalCacheDir().getAbsolutePath()
-                + File.separator + "audio" + File.separator;
-        File projectInfo = new File(baseFileDir + "project.info");
-        if (!projectInfo.exists()) {
-            projectInfo.getParentFile().mkdirs();
-        }
-
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        // Restore UI state from the savedInstanceState.
-        // This bundle has also been passed to onCreate.
-        String filePath = savedInstanceState.getString("filePath");
-        if (filePath != null) {
-            int startTime = savedInstanceState.getInt("startTime");
-            int endTime = savedInstanceState.getInt("endTime");
-            customWaveformFragment = new CustomWaveformFragment();
-            customWaveformFragment.setFilePath(filePath);
-            customWaveformFragment.setStartTime(startTime);
-            customWaveformFragment.setEndTime(endTime);
-        }
 
     }
 
@@ -98,21 +78,13 @@ public class RecordActivity extends AppCompatActivity {
 
     public void actionRecord(View v) {
 
-        String recordFilePath = baseFileDir + "Test.3gp";
-
-        customWaveformFragment = new CustomWaveformFragment();
-        customWaveformFragment.setFilePath(recordFilePath);
-
-        audioSession.record(mStartRecording, recordFilePath);
+        audioSession.record(mStartRecording, track);
         Button button = (Button) v.findViewById(R.id.record_button);
         if (mStartRecording) {
             button.setText("Stop recording");
         } else {
             button.setText("Start recording");
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.add(R.id.record_inner_frame, customWaveformFragment);
-            transaction.commit();
+
         }
         mStartRecording = !mStartRecording;
 
@@ -120,9 +92,8 @@ public class RecordActivity extends AppCompatActivity {
 
     public void actionPlay(View v) {
 
-
         Button button = (Button) v.findViewById(R.id.play_button);
-        audioSession.play(mStartPlaying, baseFileDir + "Test.3gp", customWaveformFragment);
+        audioSession.play(mStartPlaying, track);
         if (mStartPlaying) {
             button.setText("Stop playing");
         } else {
@@ -134,15 +105,29 @@ public class RecordActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (customWaveformFragment != null) {
+        if (track != null) {
             // Store values between instances here
-            SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-            SharedPreferences.Editor editor = preferences.edit();  // Put the values from the UI
-            editor.putString("filePath", customWaveformFragment.getFileName()); // value to store
-            editor.putInt("startTime", customWaveformFragment.getStartTime()); // value to store
-            editor.putInt("endTime", customWaveformFragment.getEndTime()); // value to store
-            // Commit to storage
-            editor.commit();
+            SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+            SharedPreferences.Editor ed = mPrefs.edit();
+            ed.putInt("projectID", project.getId()); // value to store
+            ed.putInt("trackID", track.getId()); // value to store
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Restore UI state from the savedInstanceState.
+        // This bundle has also been passed to onCreate.
+        SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+        String filePath = mPrefs.getString("filePath", null);
+        if (filePath != null) {
+            int projectId = mPrefs.getInt("projectID", -1);
+            int trackId = mPrefs.getInt("trackID", -1);
+            project = ((LoopDAWApp) getApplication()).projectList.get(projectId);
+            track = project.getClips().get(trackId);
+        }
+
+    }
+
 }

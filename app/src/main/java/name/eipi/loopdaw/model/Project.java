@@ -1,8 +1,6 @@
 package name.eipi.loopdaw.model;
 
-import java.util.Collection;
-
-import name.eipi.loopdaw.fragment.CustomWaveformFragment;
+import java.util.ArrayList;
 
 /**
  * Created by avd1 on 07/02/2017.
@@ -10,11 +8,12 @@ import name.eipi.loopdaw.fragment.CustomWaveformFragment;
 
 public class Project {
 
+    private String baseFilePath;
     private String name;
     private int id;
     private boolean favourite;
     private boolean published;
-    private Collection<CustomWaveformFragment> clips;
+    private ArrayList<Track> clips;
 
     public String getName() {
         return name;
@@ -50,14 +49,23 @@ public class Project {
 
     public Project(final String name) {
         this.name = name;
+        clips = new ArrayList<>();
     }
 
-    public Collection<CustomWaveformFragment> getClips() {
+    public ArrayList<Track> getClips() {
         return clips;
     }
 
-    public void setClips(Collection<CustomWaveformFragment> clips) {
+    public void setClips(ArrayList<Track> clips) {
         this.clips = clips;
+    }
+
+    public String getBaseFilePath() {
+        return baseFilePath;
+    }
+
+    public void setBaseFilePath(String baseFilePath) {
+        this.baseFilePath = baseFilePath;
     }
 
 }

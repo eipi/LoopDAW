@@ -7,9 +7,11 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.io.IOException;
-import java.text.DateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import name.eipi.loopdaw.fragment.CustomWaveformFragment;
+import name.eipi.loopdaw.model.Track;
 
 /**
  * Created by Damien on 25/02/2017.
@@ -25,28 +27,30 @@ public class AudioSession {
     }
 
     private MediaRecorder mRecorder = null;
-    private MediaPlayer   mPlayer = null;
+    private Map<Track, MediaPlayer> mediaPlayerMap = new HashMap<>();
 
-    public void record(boolean start, String fName) {
+    public void record(boolean start, Track track) {
         if (start) {
-            startRecording(fName);
+            startRecording(track);
         } else {
             stopRecording();
         }
     }
 
-    public void play(boolean start, String fName, CustomWaveformFragment customWaveformFragment) {
+    public void play(boolean start, Track track) {
         if (start) {
-            startPlaying(fName, customWaveformFragment);
+            startPlaying(track);
         } else {
-            stopPlaying();
+            stopPlaying(track);
         }
     }
 
-    private void startPlaying(String fName, CustomWaveformFragment customWaveformFragment) {
-        mPlayer = new MediaPlayer();
+    private void startPlaying(Track track) {
+
+        final MediaPlayer mPlayer = new MediaPlayer();
+        mediaPlayerMap.put(track, mPlayer);
         try {
-            mPlayer.setDataSource(fName);
+            mPlayer.setDataSource(track.getFileName());
             mPlayer.prepare();
             mPlayer.start();
         }catch(Exception e) {
@@ -62,22 +66,26 @@ public class AudioSession {
                     Log.e(this.getClass().getSimpleName(), "prepare() failed");
                 }
             }
-        }, customWaveformFragment.getEndTime() - customWaveformFragment.getStartTime());
+        }, track.getEndTime() - track.getStartTime());
     }
 
-    private void stopPlaying() {
-        if (mPlayer.isPlaying()) {
-            mPlayer.stop();
+    private void stopPlaying(Track track) {
+        MediaPlayer mPlayer = mediaPlayerMap.get(track);
+        if (mPlayer != null) {
+            if (mPlayer.isPlaying()) {
+                mPlayer.stop();
+            }
+            mPlayer.release();
+            mPlayer = null;
         }
-        mPlayer.release();
-        mPlayer = null;
+
     }
 
-    private void startRecording(String fName) {
+    private void startRecording(Track track) {
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(fName);
+        mRecorder.setOutputFile(track.getFileName());
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
         try {
@@ -102,10 +110,13 @@ public class AudioSession {
             mRecorder = null;
         }
 
-        if (mPlayer != null) {
-            mPlayer.release();
-            mPlayer = null;
+        for (MediaPlayer mPlayer : mediaPlayerMap.values()) {
+            if (mPlayer != null) {
+                mPlayer.release();
+                mPlayer = null;
+            }
         }
+
     }
 
 }
