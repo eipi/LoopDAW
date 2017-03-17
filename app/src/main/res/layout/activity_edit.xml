@@ -43,11 +43,11 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:text="Play"
+        android:text="Play SP"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/play_button"
-        android:onClick="actionPlayAll"
+        android:onClick="actionPlayWithSoundPool"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
@@ -63,6 +63,15 @@
         android:layout_alignParentStart="true">
 
         </LinearLayout>
+
+    <Button
+        android:text="Play MP"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/play_m_button"
+        android:onClick="actionPlayWithMediaPlayer"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

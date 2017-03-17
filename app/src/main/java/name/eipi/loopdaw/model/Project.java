@@ -10,7 +10,6 @@ public class Project {
 
     private String baseFilePath;
     private String name;
-    private int id;
     private boolean favourite;
     private boolean published;
     private ArrayList<Track> clips;
@@ -21,14 +20,6 @@ public class Project {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public boolean isFavourite() {
@@ -68,4 +59,19 @@ public class Project {
         this.baseFilePath = baseFilePath;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Project project = (Project) o;
+
+        return name.equals(project.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

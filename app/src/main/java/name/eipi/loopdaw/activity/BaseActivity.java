@@ -36,6 +36,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         app = (LoopDAWApp) getApplication();
     }
 
+    /**
+     * Dupe in NavigationUtils.
+     */
+    @Deprecated
     protected void goToActivity(Activity current,
                                 Class<? extends Activity> activityClass,
                                 Bundle bundle) {

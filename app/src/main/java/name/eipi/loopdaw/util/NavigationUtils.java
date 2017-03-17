@@ -1,4 +1,4 @@
-package name.eipi.loopdaw;
+package name.eipi.loopdaw.util;
 
 import android.app.Activity;
 import android.content.Intent;

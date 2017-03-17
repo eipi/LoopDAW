@@ -105,8 +105,7 @@ public class ProjectFragment extends ListFragment implements View.OnClickListene
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Bundle activityInfo = new Bundle(); // Creates a new Bundle object
-        int itemId = activity.app.projectList.get(position).getId();
-        activityInfo.putInt("projectID", itemId);
+        activityInfo.putInt("projectID", position);
 
         Intent goEdit = new Intent(getActivity(), EditActivity.class); // Creates a new Intent
     /* Add the bundle to the intent here */

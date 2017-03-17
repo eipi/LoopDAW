@@ -15,8 +15,11 @@ import name.eipi.loopdaw.fragment.TrackFragment;
 import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.model.Project;
 import name.eipi.loopdaw.model.Track;
+import name.eipi.loopdaw.util.LoopDAWLogger;
 
 public class EditActivity extends BaseActivity {
+
+    private static final LoopDAWLogger logger =  LoopDAWLogger.getInstance();
 
     TextView trackList;
     private Project project;
@@ -62,19 +65,41 @@ public class EditActivity extends BaseActivity {
 
     }
 
-    public void actionPlayAll(View view) {
+    public void actionPlayWithMediaPlayer(View view) {
 
-        Button button = (Button) view.findViewById(R.id.play_button);
+        Button button = (Button) view.findViewById(R.id.play_m_button);
         if (mStartPlaying) {
-            button.setText("Stop playing");
+            logger.msg("EditActivity.actionPlayAll - in mStartPlaying");
+            button.setText("Stop MP");
         } else {
-            button.setText("Start playing");
+            logger.msg("EditActivity.actionPlayAll - in !mStartPlaying");
+            button.setText("Play MP");
         }
-        mStartPlaying = !mStartPlaying;
+
         AudioSession audioSession = AudioSession.getInstance();
+        //audioSession.playAll(project.getClips()); //todo-makeasync
         for (Track t : project.getClips()) {
             audioSession.play(mStartPlaying, t);
         }
+        mStartPlaying = !mStartPlaying;
     }
+
+    public void actionPlayWithSoundPool(View view) {
+
+        Button button = (Button) view.findViewById(R.id.play_button);
+        if (mStartPlaying) {
+            logger.msg("EditActivity.actionPlayAll - in mStartPlaying");
+            button.setText("Stop SP");
+        } else {
+            logger.msg("EditActivity.actionPlayAll - in !mStartPlaying");
+            button.setText("Play SP");
+        }
+
+        AudioSession audioSession = AudioSession.getInstance();
+        audioSession.playAll(project.getClips()); //todo-makeasync
+        mStartPlaying = !mStartPlaying;
+    }
+
+    //actionPlayWithSoundPool
 
 }

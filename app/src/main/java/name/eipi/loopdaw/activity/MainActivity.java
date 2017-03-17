@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import name.eipi.loopdaw.NavigationUtils;
+import name.eipi.loopdaw.util.NavigationUtils;
 import name.eipi.loopdaw.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,5 +30,10 @@ public class MainActivity extends AppCompatActivity {
     public void actionBrowse(View view) {
         NavigationUtils.goToActivity(this, BrowseActivity.class, null);
     }
+
+    public void viewLog(View view) {
+        NavigationUtils.goToActivity(this, LogViewActivity.class, null);
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package name.eipi.loopdaw.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
@@ -17,6 +18,7 @@ import name.eipi.loopdaw.activity.RecordActivity;
 import name.eipi.loopdaw.activity.ViewerActivity;
 import name.eipi.loopdaw.adapter.ProjectListAdapter;
 import name.eipi.loopdaw.adapter.TrackListAdapter;
+import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.model.Project;
 import name.eipi.loopdaw.model.Track;
 
@@ -111,7 +113,9 @@ public class TrackFragment extends ListFragment implements View.OnClickListener 
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
         Bundle activityInfo = new Bundle(); // Creates a new Bundle object
-        int projId = project.getId();
+        Activity host = (Activity) v.getContext();
+        LoopDAWApp app = (LoopDAWApp) host.getApplication();
+        int projId = app.projectList.indexOf(project);
         activityInfo.putInt("projectID", projId);
         activityInfo.putInt("trackID", position);
 

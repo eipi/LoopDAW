@@ -30,7 +30,8 @@
             android:label="@string/title_activity_settings" />
         <activity android:name=".activity.BrowseActivity" />
         <activity android:name=".activity.EditActivity" />
-        <activity android:name=".activity.ViewerActivity"></activity>
+        <activity android:name=".activity.ViewerActivity" />
+        <activity android:name=".activity.LogViewActivity"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package name.eipi.loopdaw.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import name.eipi.loopdaw.R;
+import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.model.Project;
 
 /**
@@ -24,7 +26,7 @@ public class ProjectItem {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = inflater.inflate(R.layout.project_line_item, parent, false);
-        view.setId(project.getId());
+        view.setId(((LoopDAWApp)((Activity) parent.getContext()).getApplication()).projectList.indexOf(project));
 
         updateControls(project);
 
@@ -35,6 +37,7 @@ public class ProjectItem {
 
     private void updateControls(Project project) {
         ((TextView) view.findViewById(R.id.rowProjectName)).setText(project.getName());
+        ((TextView) view.findViewById(R.id.rowNumTracks)).setText(project.getClips().size() + "tracks");
         ImageView imgIcon = (ImageView) view.findViewById(R.id.RowImage);
 
         if (project.isFavourite() == true) {

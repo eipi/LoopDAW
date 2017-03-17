@@ -43,8 +43,7 @@ public class NewActivity extends BaseActivity implements View.OnClickListener {
             file.getParentFile().mkdirs();
             app.projectList.add(c);
             Bundle activityInfo = new Bundle(); // Creates a new Bundle object
-            int itemId = c.getId();
-            activityInfo.putInt("projectID", itemId);
+            activityInfo.putInt("projectID", app.projectList.indexOf(c));
             goToActivity(this, EditActivity.class, activityInfo);
         } else
             Toast.makeText(

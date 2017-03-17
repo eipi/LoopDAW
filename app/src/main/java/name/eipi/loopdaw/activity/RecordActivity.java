@@ -109,7 +109,7 @@ public class RecordActivity extends BaseActivity {
             // Store values between instances here
             SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
             SharedPreferences.Editor ed = mPrefs.edit();
-            ed.putInt("projectID", project.getId()); // value to store
+            ed.putInt("projectID", app.projectList.indexOf(project)); // value to store
             ed.putInt("trackID", track.getId()); // value to store
         }
     }

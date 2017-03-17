@@ -18,8 +18,8 @@ public class Track {
 
     private String filePath;
 
-    private Integer startTime;
-    private Integer endTime;
+    private int startTime;
+    private int endTime;
 
     public int getId() {
         return id;
@@ -62,9 +62,27 @@ public class Track {
 
     public static Track newInstance(Project project) {
         Track t = new Track();
-        t.setFilePath(project.getBaseFilePath() + File.separator + "Track" + t.getId() + ".3gp");
         t.setId(project.getClips().size());
+        t.setFilePath(project.getBaseFilePath() + "Track" + t.getId() + ".3gp");
         return t;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Track track = (Track) o;
+
+        if (id != track.id) return false;
+        return filePath != null ? filePath.equals(track.filePath) : track.filePath == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (filePath != null ? filePath.hashCode() : 0);
+        return result;
+    }
 }
