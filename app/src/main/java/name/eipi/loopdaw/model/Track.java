@@ -1,6 +1,7 @@
 package name.eipi.loopdaw.model;
 
 import java.io.File;
+import java.io.Serializable;
 
 import name.eipi.loopdaw.fragment.CustomWaveformFragment;
 
@@ -8,7 +9,7 @@ import name.eipi.loopdaw.fragment.CustomWaveformFragment;
  * Created by Damien on 26/02/2017.
  */
 
-public class Track {
+public class Track implements Serializable {
 
     private Track() {
         // no impl
@@ -16,7 +17,7 @@ public class Track {
 
     private int id;
 
-    private String filePath;
+    private transient String filePath;
 
     private int startTime;
     private int endTime;
@@ -35,7 +36,6 @@ public class Track {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-
     }
 
     public int getStartTime() {
@@ -63,7 +63,18 @@ public class Track {
     public static Track newInstance(Project project) {
         Track t = new Track();
         t.setId(project.getClips().size());
-        t.setFilePath(project.getBaseFilePath() + "Track" + t.getId() + ".3gp");
+        t.setFilePath(project.getBaseFilePath() + "Track" + t.getId() + ".aac");
+        return t;
+    }
+
+    public static Track reInstance(Project project, String trackName) {
+        Track t = new Track();
+        t.setFilePath(project.getBaseFilePath() + trackName);
+        String start = trackName.replaceFirst("Track", "");
+        String[] split = start.split("\\.");
+        String id = split[0];
+        Integer trackId = Integer.parseInt(id);
+        t.setId(trackId);
         return t;
     }
 

@@ -22,7 +22,6 @@ public class LogViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_view);
 
-
     }
 
     @Override
@@ -39,7 +38,7 @@ public class LogViewActivity extends AppCompatActivity {
                 reader = new BufferedReader(fr);
                 String bufferLine;
                 while ((bufferLine = reader.readLine())!=null) {
-                    sb.append(bufferLine).append("\r\n");
+                    sb.append(bufferLine).append("\r\n\n");
                 }
             } catch (IOException fEx) {
                 sb.append(fEx.getMessage());

@@ -1,14 +1,16 @@
 package name.eipi.loopdaw.model;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by avd1 on 07/02/2017.
  */
 
-public class Project {
+public class Project implements Serializable {
 
-    private String baseFilePath;
+    private transient String baseFilePath;
     private String name;
     private boolean favourite;
     private boolean published;
@@ -41,6 +43,12 @@ public class Project {
     public Project(final String name) {
         this.name = name;
         clips = new ArrayList<>();
+    }
+
+    public static Project create(String baseProjectsPath, File projectFile) {
+        Project project = new Project(projectFile.getName());
+        project.setBaseFilePath(baseProjectsPath + projectFile.getName() + File.separator);
+        return project;
     }
 
     public ArrayList<Track> getClips() {

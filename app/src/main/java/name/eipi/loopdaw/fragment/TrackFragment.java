@@ -112,10 +112,11 @@ public class TrackFragment extends ListFragment implements View.OnClickListener 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Bundle activityInfo = new Bundle(); // Creates a new Bundle object
         Activity host = (Activity) v.getContext();
         LoopDAWApp app = (LoopDAWApp) host.getApplication();
         int projId = app.projectList.indexOf(project);
+
+        Bundle activityInfo = new Bundle(); // Creates a new Bundle object
         activityInfo.putInt("projectID", projId);
         activityInfo.putInt("trackID", position);
 

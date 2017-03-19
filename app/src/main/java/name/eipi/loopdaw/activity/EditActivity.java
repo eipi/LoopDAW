@@ -65,41 +65,24 @@ public class EditActivity extends BaseActivity {
 
     }
 
-    public void actionPlayWithMediaPlayer(View view) {
+    public void actionPlay(View view) {
 
         Button button = (Button) view.findViewById(R.id.play_m_button);
         if (mStartPlaying) {
             logger.msg("EditActivity.actionPlayAll - in mStartPlaying");
-            button.setText("Stop MP");
+            button.setText("Stop");
         } else {
             logger.msg("EditActivity.actionPlayAll - in !mStartPlaying");
-            button.setText("Play MP");
+            button.setText("Play");
         }
 
-        AudioSession audioSession = AudioSession.getInstance();
-        //audioSession.playAll(project.getClips()); //todo-makeasync
-        for (Track t : project.getClips()) {
-            audioSession.play(mStartPlaying, t);
-        }
+        AudioSession audioSession = AudioSession.getInstance(this);
+        audioSession.play(mStartPlaying, project); //todo-makeasync
         mStartPlaying = !mStartPlaying;
     }
 
-    public void actionPlayWithSoundPool(View view) {
-
-        Button button = (Button) view.findViewById(R.id.play_button);
-        if (mStartPlaying) {
-            logger.msg("EditActivity.actionPlayAll - in mStartPlaying");
-            button.setText("Stop SP");
-        } else {
-            logger.msg("EditActivity.actionPlayAll - in !mStartPlaying");
-            button.setText("Play SP");
-        }
-
-        AudioSession audioSession = AudioSession.getInstance();
-        audioSession.playAll(project.getClips()); //todo-makeasync
-        mStartPlaying = !mStartPlaying;
+    public void actionEdit(View view) {
+        //TODO - allow edit of project info.
     }
-
-    //actionPlayWithSoundPool
 
 }

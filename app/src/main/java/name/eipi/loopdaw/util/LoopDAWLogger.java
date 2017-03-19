@@ -47,6 +47,16 @@ public class LoopDAWLogger {
         }
     }
 
+    public void reset() {
+        try {
+            FileWriter writer = new FileWriter(new File(logFilePath), false);
+            writer.write("");
+            writer.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public String getLogFilePath() {
         return logFilePath;
     }

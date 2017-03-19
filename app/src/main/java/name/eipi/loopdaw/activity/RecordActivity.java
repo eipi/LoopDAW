@@ -2,6 +2,7 @@ package name.eipi.loopdaw.activity;
 
 import android.Manifest;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -57,7 +58,7 @@ public class RecordActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
-        audioSession = AudioSession.getInstance();
+        audioSession = AudioSession.getInstance(this);
         Bundle extras = getIntent().getExtras();
         int projectContext = extras.getInt("projectID", -1);
         int trackContext = extras.getInt("trackID", -1);
@@ -84,22 +85,14 @@ public class RecordActivity extends BaseActivity {
             button.setText("Stop recording");
         } else {
             button.setText("Start recording");
-
+            Bundle activityInfo = new Bundle(); // Creates a new Bundle object
+            activityInfo.putInt("projectID", ((LoopDAWApp) getApplication()).projectList.indexOf(project));
+            activityInfo.putInt("trackID", track.getId());
+            Intent goView = new Intent(this, ViewerActivity.class);
+            goView.putExtras(activityInfo);
+            this.startActivity(goView); // Launch the Intent
         }
         mStartRecording = !mStartRecording;
-
-    }
-
-    public void actionPlay(View v) {
-
-        Button button = (Button) v.findViewById(R.id.play_button);
-        audioSession.play(mStartPlaying, track);
-        if (mStartPlaying) {
-            button.setText("Stop playing");
-        } else {
-            button.setText("Start playing");
-        }
-        mStartPlaying = !mStartPlaying;
     }
 
     @Override

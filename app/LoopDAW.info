@@ -1,0 +1,19 @@
+
+
+
+
+Libs used
+
+https://github.com/Semantive/waveform-android
+
+https://github.com/google/ringdroid
+
+https://github.com/felixpalmer/android-visualizer
+
+
+java.lang.IllegalArgumentException: No view found for id  for fragment 
+
+https://github.com/soundcloud/android-intent-sharing/wiki
+https://developers.soundcloud.com/docs/api/reference
+https://github.com/soundcloud/java-api-wrapper
+https://google.github.io/ExoPlayer/guide.html#add-exoplayer-as-a-dependency
