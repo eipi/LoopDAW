@@ -38,7 +38,7 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_browse);
+        setContentView(R.layout.activity_signin);
 
         // Views
         mStatusTextView = (TextView) findViewById(R.id.status);

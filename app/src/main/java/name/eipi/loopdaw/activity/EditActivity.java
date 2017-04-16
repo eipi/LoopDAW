@@ -24,6 +24,7 @@ public class EditActivity extends BaseActivity {
     TextView trackList;
     private Project project;
     boolean mStartPlaying = true;
+    private AudioSession audioSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,6 @@ public class EditActivity extends BaseActivity {
         setContentView(R.layout.activity_edit);
         Bundle extras = getIntent().getExtras();
         int projectContext = extras.getInt("projectID", -1);
-        int trackContext = extras.getInt("trackID", -1);
         if (projectContext != -1) {
             project = ((LoopDAWApp) getApplication()).projectList.get(projectContext);
         }
@@ -75,14 +75,26 @@ public class EditActivity extends BaseActivity {
             logger.msg("EditActivity.actionPlayAll - in !mStartPlaying");
             button.setText("Play");
         }
-
-        AudioSession audioSession = AudioSession.getInstance(this);
+        if (audioSession == null) {
+            audioSession = AudioSession.getInstance(this);
+        }
         audioSession.play(mStartPlaying, project); //todo-makeasync
         mStartPlaying = !mStartPlaying;
     }
 
     public void actionEdit(View view) {
-        //TODO - allow edit of project info.
+
+        //TODO - allow edit of project info?
+
+
     }
+
+    public void actionExport(View view) {
+
+        //TODO - allow export of project data to Google Drive.
+
+
+    }
+
 
 }

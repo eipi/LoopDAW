@@ -6,7 +6,6 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Handler;
-import android.view.View;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -17,10 +16,12 @@ import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.MergingMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlaybackControlView;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
@@ -31,6 +32,8 @@ import com.google.android.exoplayer2.util.Util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +45,8 @@ import name.eipi.loopdaw.util.LoopDAWLogger;
  * Created by Damien on 25/02/2017.
  */
 public class AudioSession {
+
+
 
     private final static boolean useSoundPool = Boolean.TRUE;
 
@@ -67,9 +72,13 @@ public class AudioSession {
         // 3. Create the player
         player = ExoPlayerFactory.newSimpleInstance(context, trackSelector, loadControl);
 
-        SimpleExoPlayerView view = (SimpleExoPlayerView) ((Activity) ctx).findViewById(R.id.player_view);
+        PlaybackControlView view = (PlaybackControlView ) ((Activity) ctx).findViewById(R.id.player_view);
+
         // Bind the player to the view.
-        view.setPlayer(player);
+        if (view != null) {
+            view.setPlayer(player);
+        }
+
     }
 
     public static AudioSession getInstance(Context context) {
@@ -196,16 +205,22 @@ public class AudioSession {
         // Produces Extractor instances for parsing the media data.
         ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
         // This is the MediaSource representing the media to be played.
+        Collection<LoopingMediaSource> loops = new ArrayList<>();
         for (Track track : clips) {
             MediaSource audioSource = new ExtractorMediaSource(Uri.parse(new File(track.getFileName()).toURI().toString()),
                     dataSourceFactory, extractorsFactory, null, null);
             LoopingMediaSource loopSource = new LoopingMediaSource(audioSource);
             // Prepare the player with the source.
-            player.prepare(loopSource);
+            loops.add(loopSource);
+            //player.prepare(loopSource);
         }
-
+        LoopingMediaSource[] loopingMediaSources = new LoopingMediaSource[loops.size()];
+        loops.toArray(loopingMediaSources);
+        MergingMediaSource ms = new MergingMediaSource(loopingMediaSources);
+//        player.prepare(ms);
+        // / Prepare the player with the source.
+        player.prepare(ms);
         player.setPlayWhenReady(true);
-
     }
 
     public void stopAll() {

@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void actionBrowse(View view) {
-        NavigationUtils.goToActivity(this, BrowseActivity.class, null);
+        NavigationUtils.goToActivity(this, SignInActivity.class, null);
     }
 
     public void viewLog(View view) {

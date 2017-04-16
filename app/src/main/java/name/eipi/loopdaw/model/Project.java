@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by avd1 on 07/02/2017.
  */
 
-public class Project implements Serializable {
+public class Project implements Serializable, Comparable<Project> {
 
     private transient String baseFilePath;
     private String name;
@@ -81,5 +81,17 @@ public class Project implements Serializable {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+
+    @Override
+    public int compareTo(Project project) {
+        if (this.isFavourite() == project.isFavourite()) {
+            return this.getName().compareTo(project.getName());
+        } else if (this.isFavourite()) {
+            return 1;
+        } else {
+            return -1;
+        }
+
     }
 }

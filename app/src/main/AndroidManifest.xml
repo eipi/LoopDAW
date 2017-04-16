@@ -28,7 +28,7 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".activity.BrowseActivity" />
+        <activity android:name=".activity.SignInActivity" />
         <activity android:name=".activity.EditActivity" />
         <activity android:name=".activity.ViewerActivity" />
         <activity android:name=".activity.LogViewActivity"></activity>

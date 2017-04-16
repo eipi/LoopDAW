@@ -11,16 +11,6 @@
     tools:context="name.eipi.loopdaw.activity.NewActivity">
 
 
-    <Button
-        android:id="@+id/saveProjectBtn"
-        style="@android:style/Holo.Light.ButtonBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableTop="@drawable/ic_save_todo"
-        android:text="Create"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-
     <EditText
         android:id="@+id/nameEditText"
         android:layout_width="wrap_content"
@@ -48,5 +38,13 @@
         android:layout_toStartOf="@+id/nameEditText"
         android:textSize="24sp"
         android:layout_alignBottom="@+id/nameEditText" />
+
+    <Button
+        android:id="@+id/saveProjectBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create new project"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

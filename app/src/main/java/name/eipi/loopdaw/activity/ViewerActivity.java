@@ -1,9 +1,11 @@
 package name.eipi.loopdaw.activity;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.fragment.TrackFragment;
@@ -32,4 +34,14 @@ public class ViewerActivity extends AppCompatActivity {
         transaction.commit();
 
     }
+
+
+    public void backToProject(View view) {
+        Bundle activityInfo = new Bundle(); // Creates a new Bundle object
+        activityInfo.putInt("projectID", ((LoopDAWApp) getApplication()).projectList.indexOf(project));
+        Intent goView = new Intent(this, EditActivity.class);
+        goView.putExtras(activityInfo);
+        this.startActivity(goView); // Launch the Intent
+    }
+
 }

@@ -20,4 +20,13 @@
 
     </FrameLayout>
 
+    <Button
+        android:text="Back to project"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/backToProject"
+        android:onClick="backToProject"
+        android:layout_below="@+id/viewer_frame"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>
