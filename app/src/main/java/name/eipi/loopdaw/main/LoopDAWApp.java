@@ -1,6 +1,8 @@
 package name.eipi.loopdaw.main;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.google.gson.Gson;
 
@@ -59,9 +61,17 @@ public class LoopDAWApp extends Application {
 
     @Override
     public void onTerminate() {
+        super.onTerminate();
         for (Project project : projectList) {
             String objectString = new Gson().toJson(project);
             System.out.println(objectString);
         }
     }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
 }

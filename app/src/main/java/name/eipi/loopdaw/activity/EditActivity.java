@@ -15,6 +15,7 @@ import name.eipi.loopdaw.fragment.TrackFragment;
 import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.model.Project;
 import name.eipi.loopdaw.model.Track;
+import name.eipi.loopdaw.util.AudioMixer;
 import name.eipi.loopdaw.util.LoopDAWLogger;
 
 public class EditActivity extends BaseActivity {
@@ -90,7 +91,7 @@ public class EditActivity extends BaseActivity {
     }
 
     public void actionExport(View view) {
-
+        new AudioMixer(project).renderProject();
         //TODO - allow export of project data to Google Drive.
 
 

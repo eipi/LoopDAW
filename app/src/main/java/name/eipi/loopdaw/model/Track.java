@@ -22,6 +22,16 @@ public class Track implements Serializable {
     private int startTime;
     private int endTime;
 
+    private int numLoops = 2;
+
+    public int getNumLoops() {
+        return numLoops;
+    }
+
+    public void setNumLoops(int numLoops) {
+        this.numLoops = numLoops;
+    }
+
     public int getId() {
         return id;
     }
