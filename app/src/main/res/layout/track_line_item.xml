@@ -2,21 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/RelativeLayout1"
-    style="@style/appLayoutTheme"
     android:layout_width="fill_parent"
     android:layout_height="46dp"
     android:padding="8dp">
-
-    <ImageView
-        android:id="@+id/RowImage"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="14dp"
-        android:contentDescription="fav"
-        android:gravity="center_vertical"
-        android:src="@drawable/ic_favourite_off"
-        tools:ignore="HardcodedText" />
 
     <ImageView
         android:id="@+id/imgDelete"
@@ -29,6 +17,18 @@
         tools:ignore="HardcodedText"
         android:onClick="delete" />
 
+    <ImageView
+        android:id="@+id/record_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignStart="@id/imgDelete"
+        android:layout_alignParentTop="true"
+        android:contentDescription="fav"
+        android:src="@android:drawable/ic_delete"
+        tools:ignore="HardcodedText"
+        android:onClick="delete" />
+
+
     <TextView
         android:id="@+id/rowTrackName"
         android:layout_width="wrap_content"
@@ -38,7 +38,6 @@
         android:layout_toRightOf="@+id/RowImage"
         android:gravity="center_vertical"
         android:text=""
-        android:textColor="@color/appFooterFontColor"
         android:textSize="14sp"
         android:textStyle="bold"
         tools:ignore="HardcodedText" />
@@ -51,7 +50,6 @@
         android:layout_alignLeft="@+id/rowProjectName"
         android:gravity="center_vertical"
         android:text="Created on {dtm TODO}"
-        android:textColor="@color/textBGColor"
         android:textSize="11sp"
         android:textStyle="bold"
         tools:ignore="HardcodedText,SmallSp" />
@@ -70,17 +68,6 @@
         <!--android:textStyle="bold"-->
         <!--tools:ignore="HardcodedText,SmallSp" />-->
 
-    <!--<TextView-->
-        <!--android:id="@+id/rowNumTracks"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignLeft="@+id/rowDuration"-->
-        <!--android:layout_alignTop="@+id/imgDelete"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:text="3 tracks"-->
-        <!--android:textColor="@color/appFooterFontColor"-->
-        <!--android:textSize="14sp"-->
-        <!--android:textStyle="bold"-->
-        <!--tools:ignore="HardcodedText" />-->
+
 
 </RelativeLayout>

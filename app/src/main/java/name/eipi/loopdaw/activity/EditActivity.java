@@ -2,10 +2,12 @@ package name.eipi.loopdaw.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import name.eipi.loopdaw.AudioSession;
@@ -68,13 +70,13 @@ public class EditActivity extends BaseActivity {
 
     public void actionPlay(View view) {
 
-        Button button = (Button) view.findViewById(R.id.play_m_button);
+        ImageButton button = (ImageButton) view.findViewById(R.id.fab);
         if (mStartPlaying) {
             logger.msg("EditActivity.actionPlayAll - in mStartPlaying");
-            button.setText("Stop");
+            button.setImageResource(R.drawable.ic_stop_black_24dp);
         } else {
             logger.msg("EditActivity.actionPlayAll - in !mStartPlaying");
-            button.setText("Play");
+            button.setImageResource(R.drawable.ic_play_arrow_black_24dp);
         }
         if (audioSession == null) {
             audioSession = AudioSession.getInstance(this);

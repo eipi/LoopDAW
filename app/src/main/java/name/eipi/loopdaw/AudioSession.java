@@ -169,17 +169,21 @@ public class AudioSession {
 
         try {
             mRecorder.prepare();
-        } catch (IOException e) {
-            logger.msg(this.getClass().getSimpleName() + "prepare() for record failed : " + track.getFileName());
+            mRecorder.start();
+        } catch (IllegalStateException | IOException e) {
+            logger.msg(this.getClass().getSimpleName() + " prepare() for record failed : " + track.getFileName());
         }
 
-        mRecorder.start();
     }
 
     private void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
+        try {
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+        } catch (IllegalStateException ex) {
+            logger.msg(this.getClass().getSimpleName() + " stop audio failed : " + mRecorder);
+        }
     }
 
 

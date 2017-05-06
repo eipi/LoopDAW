@@ -2,7 +2,6 @@ package name.eipi.loopdaw;
 
 import org.junit.Test;
 
-
 import name.eipi.loopdaw.model.Project;
 import name.eipi.loopdaw.model.Track;
 import name.eipi.loopdaw.util.AudioMixer;

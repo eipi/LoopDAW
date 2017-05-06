@@ -11,8 +11,6 @@ import android.widget.ListView;
 
 import name.eipi.loopdaw.activity.BaseActivity;
 import name.eipi.loopdaw.activity.EditActivity;
-import name.eipi.loopdaw.activity.OpenActivity;
-import name.eipi.loopdaw.activity.RecordActivity;
 import name.eipi.loopdaw.adapter.ProjectListAdapter;
 import name.eipi.loopdaw.model.Project;
 

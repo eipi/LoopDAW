@@ -2,6 +2,7 @@ package name.eipi.loopdaw.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
 
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.fragment.ProjectFragment;
@@ -26,7 +29,6 @@ import name.eipi.loopdaw.model.Project;
 public abstract class BaseActivity extends AppCompatActivity {
 
     public LoopDAWApp app;
-    protected Bundle activityInfo;
     protected ProjectFragment projectFragment;
     protected TrackFragment trackFragment;
 
@@ -50,14 +52,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         current.startActivity(newActivity);
     }
 
-    public void openInfoDialog(Activity current) {
+    public void openInfoDialog(Context current) {
         Dialog dialog = new Dialog(current);
         dialog.setTitle("About LoopDAW");
-        dialog.setContentView(R.layout.info);
-
-        TextView currentVersion = (TextView) dialog
-                .findViewById(R.id.versionTextView);
-        currentVersion.setText("1.0.0");
+//        dialog.setContentView(R.layout.info);
+//        TextView currentVersion = (TextView) dialog.findViewById(R.id.versionTextView);
+//        currentVersion.setText("1.0.0");
 
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
@@ -67,23 +67,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_navigation, menu);
         return true;
-    }
-
-    public void menuInfo(MenuItem m)
-    {
-        openInfoDialog(this);
-    }
-
-    public void menuHelp(MenuItem m)
-    {
-        toastMessage("Not yet implemented!");
-    }
-
-    public void menuHome(MenuItem m)
-    {
-        goToActivity(this, MainActivity.class, null);
     }
 
     protected void toastMessage(String s) {
@@ -98,6 +83,27 @@ public abstract class BaseActivity extends AppCompatActivity {
             ProjectFragment.listAdapter.notifyDataSetChanged();
         }
 
+    }
+
+    protected void createProject(final String projectName) {
+
+        if ((projectName.length() > 0)) {
+            Project c = new Project(projectName);
+            String baseFileDir = getExternalCacheDir().getAbsolutePath()
+                    + File.separator + "projects" + File.separator + projectName + File.separator;
+            c.setBaseFilePath(baseFileDir);
+            File file = new File(baseFileDir + "project.info");
+            file.getParentFile().mkdirs();
+            app.projectList.add(c);
+            Bundle activityInfo = new Bundle(); // Creates a new Bundle object
+            activityInfo.putInt("projectID", app.projectList.indexOf(c));
+            goToActivity(this, EditActivity.class, activityInfo);
+        } else {
+            Toast.makeText(
+                    this,
+                    "You must enter a name for the project.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

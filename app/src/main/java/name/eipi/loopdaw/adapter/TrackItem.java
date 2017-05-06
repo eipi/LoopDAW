@@ -26,7 +26,7 @@ public class TrackItem {
         view = inflater.inflate(R.layout.track_line_item, parent, false);
         view.setId(track.getId());
 
-        updateControls(track);
+//        updateControls(track);
 
         ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
         imgDelete.setTag(track);

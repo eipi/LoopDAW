@@ -1,6 +1,7 @@
 package name.eipi.loopdaw.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -10,13 +11,23 @@ import android.os.Bundle;
 
 public class NavigationUtils {
 
-    public static void goToActivity(Activity currentActivity,
+    public static void goToActivity(Context currentActivity,
                                     Class<? extends Activity> activity, Bundle bundle) {
-        Intent newActivity = new Intent(currentActivity, activity);
-        if (bundle != null) {
-            newActivity.putExtras(bundle);
+
+        LoopDAWLogger logger = LoopDAWLogger.getInstance();
+
+
+        try {
+            Intent newActivity = new Intent(currentActivity, activity);
+            if (bundle != null) {
+                newActivity.putExtras(bundle);
+            }
+            currentActivity.startActivity(newActivity);
+        } catch (Throwable t) {
+            logger.msg(t.getMessage());
+            logger.msg(t.toString());
         }
-        currentActivity.startActivity(newActivity);
+
     }
 
 }

@@ -3,4 +3,19 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="g_top_margin">12dp</dimen>
+    <dimen name="md_keylines">25dp</dimen>
+    <dimen name="card_height">120dp</dimen>
+    <dimen name="card_image_height">40dp</dimen>
+    <dimen name="card_title_height">10dp</dimen>
+    <dimen name="article_subheading">20sp</dimen>
+    <dimen name="cards_button_width">25dp</dimen>
+    <dimen name="cards_button_height">25dp</dimen>
+
+    <dimen name="item_button_width">35dp</dimen>
+    <dimen name="item_button_height">35dp</dimen>
+
+    <dimen name="navheader_height">50dp</dimen>
+
+    <dimen name="content_padding_normal">20dp</dimen>
+
 </resources>

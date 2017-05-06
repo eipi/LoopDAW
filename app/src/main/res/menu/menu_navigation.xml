@@ -1,0 +1,39 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/menu_home_btn"
+            android:icon="@drawable/ic_home_black_24dp"
+            android:tint="@color/dark_grey"
+            android:title="Home"/>
+
+        <!--<item-->
+        <!--android:icon="@drawable/ic_favorite_black_24dp"-->
+        <!--android:tint="@color/dark_grey"-->
+        <!--android:title="Two"-->
+        <!--android:onClick=""/>-->
+
+        <item
+            android:id="@+id/menu_signin_btn"
+            android:icon="@drawable/ic_fingerprint_black_24dp"
+        android:tint="@color/dark_grey"
+        android:title="Sign in to Google"/>
+
+        <item
+            android:id="@+id/menu_signin__sc_btn"
+            android:icon="@drawable/ic_cloud_circle_black_24dp"
+        android:tint="@color/dark_grey"
+        android:title="Sign in to SoundCloud"/>
+
+        <item
+            android:id="@+id/menu_info_btn"
+            android:icon="@drawable/ic_info_black_24dp"
+        android:tint="@color/dark_grey"
+        android:title="Info"/>
+
+        <item
+            android:id="@+id/menu_logs"
+            android:icon="@drawable/ic_insert_drive_file_black_24dp"
+            android:tint="@color/dark_grey"
+            android:title="Logs"/>
+    </group>
+</menu>

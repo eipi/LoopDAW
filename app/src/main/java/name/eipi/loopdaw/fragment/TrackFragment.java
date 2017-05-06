@@ -13,10 +13,8 @@ import android.widget.ListView;
 import java.io.File;
 
 import name.eipi.loopdaw.activity.BaseActivity;
-import name.eipi.loopdaw.activity.OpenActivity;
 import name.eipi.loopdaw.activity.RecordActivity;
 import name.eipi.loopdaw.activity.ViewerActivity;
-import name.eipi.loopdaw.adapter.ProjectListAdapter;
 import name.eipi.loopdaw.adapter.TrackListAdapter;
 import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.model.Project;
