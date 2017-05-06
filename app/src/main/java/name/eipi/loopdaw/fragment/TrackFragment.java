@@ -118,7 +118,7 @@ public class TrackFragment extends ListFragment implements View.OnClickListener 
         activityInfo.putInt("projectID", projId);
         activityInfo.putInt("trackID", position);
 
-        String fName = project.getClips().get(position).getFileName();
+        String fName = project.getClips().get(position).getFilePath();
         File file;
 
         if (fName != null && (file = new File(fName)).exists()) {

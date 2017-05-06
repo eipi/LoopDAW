@@ -1,0 +1,1138 @@
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/misc.xml	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ .idea/misc.xml	
+@@ -37,7 +37,7 @@
+     <ConfirmationsSetting value="0" id="Add" />
+     <ConfirmationsSetting value="0" id="Remove" />
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/build/classes" />
+   </component>
+   <component name="ProjectType">
+\ No newline at end of file
+Index: app/src/main/java/name/eipi/loopdaw/fragment/ProjectFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/fragment/ProjectFragment.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/fragment/ProjectFragment.java	
+@@ -9,6 +9,9 @@
+ import android.view.View;
+ import android.widget.ListView;
+ 
++import java.util.Arrays;
++import java.util.List;
++
+ import name.eipi.loopdaw.activity.BaseActivity;
+ import name.eipi.loopdaw.activity.EditActivity;
+ import name.eipi.loopdaw.adapter.ProjectListAdapter;
+@@ -37,7 +40,8 @@
+     public void onCreate(Bundle savedInstanceState)
+     {
+         super.onCreate(savedInstanceState);
+-        listAdapter = new ProjectListAdapter(activity, this, activity.app.projectList);
++        List<Project> projects = Arrays.asList(activity.app.projectList.values().toArray(new Project[activity.app.projectList.size()]));
++        listAdapter = new ProjectListAdapter(activity, this, projects);
+         setListAdapter(listAdapter);
+     }
+ 
+Index: app/src/main/java/name/eipi/loopdaw/fragment/ListContentFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/fragment/ListContentFragment.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/fragment/ListContentFragment.java	
+@@ -15,22 +15,40 @@
+  */
+ package name.eipi.loopdaw.fragment;
+ 
++import android.content.Context;
+ import android.os.Bundle;
+ import android.support.v4.app.Fragment;
++import android.support.v7.widget.LinearLayoutManager;
+ import android.support.v7.widget.RecyclerView;
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
+ 
+ import name.eipi.loopdaw.R;
++import name.eipi.loopdaw.adapter.CardContentAdapter;
++import name.eipi.loopdaw.main.LoopDAWApp;
++import name.eipi.loopdaw.model.Project;
+ 
+ /**
+  * Provides UI for the view with List.
+  */
+ public class ListContentFragment extends Fragment {
++
++    private LoopDAWApp app;
++
+     @Override
+     public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                              Bundle savedInstanceState) {
+-        return inflater.inflate(R.layout.item_list, null);
++        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
++                R.layout.recycler_view, container, false);
++        Context context = recyclerView.getContext();
++        app = (LoopDAWApp) context.getApplicationContext();
++        Project project = app.projectList.get(Integer.valueOf(savedInstanceState.get("projectID").toString()));
++        CardContentAdapter adapter = new CardContentAdapter(context, project.getTrackList());
++        recyclerView.setAdapter(adapter);
++        recyclerView.setHasFixedSize(true);
++        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
++        return recyclerView;
++//        return inflater.inflate(R.layout.item_list, null);
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/java/name/eipi/loopdaw/fragment/CardContentFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/fragment/CardContentFragment.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/fragment/CardContentFragment.java	
+@@ -43,7 +43,7 @@
+                 R.layout.recycler_view, container, false);
+         Context context = recyclerView.getContext();
+         app = (LoopDAWApp) context.getApplicationContext();
+-        CardContentAdapter adapter = new CardContentAdapter(context, app.projectList);
++        CardContentAdapter adapter = new CardContentAdapter(context, app.getProjectsList());
+         recyclerView.setAdapter(adapter);
+         recyclerView.setHasFixedSize(true);
+         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+Index: app/src/test/java/name/eipi/loopdaw/AudioMixerTest.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/test/java/name/eipi/loopdaw/AudioMixerTest.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/test/java/name/eipi/loopdaw/AudioMixerTest.java	
+@@ -16,11 +16,11 @@
+     public void testAudioMixer() throws Exception {
+         Project project1 = new Project("AudioMixerTestProject1");
+         Track track1 = Track.newInstance(project1);
+-        track1.setFilePath("C:/devel/LoopDAW/app/src/test/resources/Track1.aac");
++        track1.setFilePath("C:/devel/LoopDAW/app/src/test/resources/1.aac");
+         Track track2 = Track.newInstance(project1);
+-        track2.setFilePath("C:/devel/LoopDAW/app/src/test/resources/Track2.aac");
+-        project1.getClips().add(track1);
+-        project1.getClips().add(track2);
++        track2.setFilePath("C:/devel/LoopDAW/app/src/test/resources/2.aac");
++        project1.getClips().put(1l, track1);
++        project1.getClips().put(2l, track2);
+ 
+         AudioMixer audioMixer = new AudioMixer(project1);
+         audioMixer.renderProject();
+Index: app/src/main/java/name/eipi/loopdaw/model/Project.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/model/Project.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/model/Project.java	
+@@ -2,7 +2,12 @@
+ 
+ import java.io.File;
+ import java.io.Serializable;
+-import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.SortedMap;
++import java.util.TreeMap;
+ 
+ /**
+  * Created by avd1 on 07/02/2017.
+@@ -11,11 +16,30 @@
+ public class Project implements Serializable, Comparable<Project> {
+ 
+     private transient String baseFilePath;
++    private long id;
+     private String name;
+     private boolean favourite;
+     private boolean published;
+-    private ArrayList<Track> clips;
++    private String additionalNotes;
+ 
++    public String getAdditionalNotes() {
++        return additionalNotes;
++    }
++
++    public void setAdditionalNotes(String additionalNotes) {
++        this.additionalNotes = additionalNotes;
++    }
++
++    public long getId() {
++        return id;
++    }
++
++    public void setId (long id) {
++        this.id = id;
++    }
++
++    private SortedMap<Long, Track> clips;
++
+     public String getName() {
+         return name;
+     }
+@@ -42,20 +66,31 @@
+ 
+     public Project(final String name) {
+         this.name = name;
+-        clips = new ArrayList<>();
++        this.id = System.currentTimeMillis();
++        clips = new TreeMap<>();
+     }
+ 
++    public Project(final String name, final long id) {
++        this.name = name;
++        this.id = id;
++        clips = new TreeMap<>();
++    }
++
+     public static Project create(String baseProjectsPath, File projectFile) {
+-        Project project = new Project(projectFile.getName());
++        Project project = new Project(null, Long.valueOf(projectFile.getName()));
+         project.setBaseFilePath(baseProjectsPath + projectFile.getName() + File.separator);
+         return project;
+     }
+ 
+-    public ArrayList<Track> getClips() {
++    public SortedMap<Long, Track> getClips() {
+         return clips;
+     }
+ 
+-    public void setClips(ArrayList<Track> clips) {
++    public List<Track> getTrackList() {
++        return Arrays.asList(this.getClips().values().toArray(new Track[this.getClips().size()]));
++    }
++
++    public void setClips(SortedMap<Long, Track> clips) {
+         this.clips = clips;
+     }
+ 
+@@ -74,7 +109,7 @@
+ 
+         Project project = (Project) o;
+ 
+-        return name.equals(project.name);
++        return id == project.id;
+ 
+     }
+ 
+@@ -92,6 +127,5 @@
+         } else {
+             return -1;
+         }
+-
+     }
+ }
+Index: app/src/main/java/name/eipi/loopdaw/activity/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/activity/MainActivity.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/activity/MainActivity.java	
+@@ -28,7 +28,6 @@
+ import name.eipi.loopdaw.R;
+ import name.eipi.loopdaw.fragment.CardContentFragment;
+ import name.eipi.loopdaw.fragment.ListContentFragment;
+-import name.eipi.loopdaw.fragment.TileContentFragment;
+ import name.eipi.loopdaw.main.LoopDAWApp;
+ import name.eipi.loopdaw.util.NavigationUtils;
+ 
+@@ -180,8 +179,8 @@
+             openInfoDialog(this);
+         } else if (id == R.id.menu_signin_btn) {
+             goToActivity(this, SignInActivity.class, null);
+-        } else if (id == R.id.menu_signin__sc_btn) {
+-            goToActivity(this, SignInActivity.class, null);
++//        } else if (id == R.id.menu_signin__sc_btn) {
++//            goToActivity(this, SignInActivity.class, null);
+         } else if (id == R.id.menu_logs) {
+             goToActivity(this, LogViewActivity.class, null);
+         }
+@@ -193,7 +192,6 @@
+         LoopDAWApp thisApp = (LoopDAWApp) getApplication();
+         Adapter adapter = new Adapter(getSupportFragmentManager());
+ //        adapter.addFragment(new ListContentFragment(), "List");
+-//        adapter.addFragment(new TileContentFragment(), "Tile");
+         adapter.addFragment(new CardContentFragment(), "Projects");
+         viewPager.setAdapter(adapter);
+     }
+Index: app/src/main/java/name/eipi/loopdaw/adapter/TrackListAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/adapter/TrackListAdapter.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/adapter/TrackListAdapter.java	
+@@ -5,7 +5,10 @@
+ import android.view.ViewGroup;
+ import android.widget.ArrayAdapter;
+ 
++import java.util.Arrays;
+ import java.util.List;
++import java.util.Map;
++import java.util.SortedMap;
+ 
+ import name.eipi.loopdaw.R;
+ import name.eipi.loopdaw.model.Track;
+@@ -18,22 +21,23 @@
+ 
+     private Context context;
+     private View.OnClickListener deleteListener;
++
+     public List<Track> trackList;
+ 
+-    public TrackListAdapter(Context context, View.OnClickListener deleteListener, List<Track> trackList)
++    public TrackListAdapter(Context context, View.OnClickListener deleteListener, List<Track> trackListIn)
+     {
+-        super(context, R.layout.track_line_item, trackList);
++        super(context, R.layout.track_line_item, trackListIn);
+ 
+         this.context = context;
+         this.deleteListener = deleteListener;
+-        this.trackList = trackList;
++        this.trackList = trackListIn;
+     }
+ 
+     @Override
+     public View getView(int position, View convertView, ViewGroup parent)
+     {
+         TrackItem item = new TrackItem(context, parent, deleteListener,
+-                trackList.get(position));
++                trackList.get(position), position);
+         return item.view;
+     }
+ 
+Index: app/src/main/java/name/eipi/loopdaw/adapter/ProjectItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/adapter/ProjectItem.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/adapter/ProjectItem.java	
+@@ -21,12 +21,12 @@
+     View view;
+ 
+     public ProjectItem(Context context, ViewGroup parent,
+-                      View.OnClickListener deleteListener, Project project)
++                      View.OnClickListener deleteListener, Project project, final int id)
+     {
+         LayoutInflater inflater = (LayoutInflater) context
+                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+         view = inflater.inflate(R.layout.project_line_item, parent, false);
+-        view.setId(((LoopDAWApp)((Activity) parent.getContext()).getApplication()).projectList.indexOf(project));
++        view.setId(id);
+ 
+         updateControls(project);
+ 
+Index: app/src/main/java/name/eipi/loopdaw/adapter/TrackItem.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/adapter/TrackItem.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/adapter/TrackItem.java	
+@@ -19,16 +19,16 @@
+     View view;
+ 
+     public TrackItem(Context context, ViewGroup parent,
+-                       View.OnClickListener deleteListener, Track track)
++                       View.OnClickListener deleteListener, Track track, final int id)
+     {
+         LayoutInflater inflater = (LayoutInflater) context
+                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+         view = inflater.inflate(R.layout.track_line_item, parent, false);
+-        view.setId(track.getId());
++        view.setId(id);
+ 
+ //        updateControls(track);
+ 
+-        ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
++        ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDeleteTrack);
+         imgDelete.setTag(track);
+         imgDelete.setOnClickListener(deleteListener);
+     }
+@@ -42,6 +42,10 @@
+         } else {
+             imgIcon.setImageResource(R.drawable.ic_favourite_off);
+         }
++
++    }
++
++    protected void actionPlayRecord(View view) {
+ 
+     }
+ 
+Index: app/src/main/java/name/eipi/loopdaw/fragment/TileContentFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/fragment/TileContentFragment.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/fragment/TileContentFragment.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
+@@ -1,37 +0,0 @@
+-/*
+- * Copyright (C) 2015 The Android Open Source Project
+- *
+- * Licensed under the Apache License, Version 2.0 (the "License");
+- * you may not use this file except in compliance with the License.
+- * You may obtain a copy of the License at
+- *
+- *      http://www.apache.org/licenses/LICENSE-2.0
+- *
+- * Unless required by applicable law or agreed to in writing, software
+- * distributed under the License is distributed on an "AS IS" BASIS,
+- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+- * See the License for the specific language governing permissions and
+- * limitations under the License.
+- */
+-
+-package name.eipi.loopdaw.fragment;
+-
+-import android.os.Bundle;
+-import android.support.v4.app.Fragment;
+-import android.support.v7.widget.RecyclerView;
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-
+-import name.eipi.loopdaw.R;
+-
+-/**
+- * Provides UI for the view with Cards.
+- */
+-public class TileContentFragment extends Fragment {
+-    @Override
+-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+-                             Bundle savedInstanceState) {
+-        return inflater.inflate(R.layout.item_tile, null);
+-    }
+-}
+\ No newline at end of file
+Index: app/src/main/java/name/eipi/loopdaw/util/AudioMixer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/util/AudioMixer.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/util/AudioMixer.java	
+@@ -41,7 +41,7 @@
+         try {
+ 
+             Collection<Byte[]> byteArrayList = new ArrayList<>();
+-            for (Track track : project.getClips()) {
++            for (Track track : project.getTrackList()) {
+                 //MediaExtractor extractor = new MediaExtractor();
+                 FileInputStream inputStream = new FileInputStream(track.getFileName());
+ //                byte[] data = new byte[1024];
+Index: app/src/main/java/name/eipi/loopdaw/activity/RecordActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/activity/RecordActivity.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/activity/RecordActivity.java	
+@@ -12,6 +12,8 @@
+ import android.os.Bundle;
+ import android.view.View;
+ import android.widget.Button;
++import android.widget.ImageButton;
++import android.widget.ImageView;
+ import android.widget.TextView;
+ 
+ 
+@@ -77,17 +79,17 @@
+         audioSession.cleanUp();
+     }
+ 
+-    public void actionRecord(View v) {
++    public void actionPlayRecord(View v) {
+ 
+         audioSession.record(mStartRecording, track);
+-        Button button = (Button) v.findViewById(R.id.record_button);
++        ImageView button = (ImageView) v.findViewById(R.id.action_button);
+         if (mStartRecording) {
+-            button.setText("Stop recording");
++            button.setImageResource(R.drawable.ic_stop_black_24dp);
+         } else {
+-            button.setText("Start recording");
++            button.setImageResource(R.drawable.ic_stop_black_24dp);
+             Bundle activityInfo = new Bundle(); // Creates a new Bundle object
+-            activityInfo.putInt("projectID", ((LoopDAWApp) getApplication()).projectList.indexOf(project));
+-            activityInfo.putInt("trackID", track.getId());
++            activityInfo.putLong("projectID", project.getId());
++            activityInfo.putLong("trackID", track.getId());
+             Intent goView = new Intent(this, ViewerActivity.class);
+             goView.putExtras(activityInfo);
+             this.startActivity(goView); // Launch the Intent
+@@ -102,8 +104,8 @@
+             // Store values between instances here
+             SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+             SharedPreferences.Editor ed = mPrefs.edit();
+-            ed.putInt("projectID", app.projectList.indexOf(project)); // value to store
+-            ed.putInt("trackID", track.getId()); // value to store
++            ed.putLong("projectID", project.getId()); // value to store
++            ed.putLong("trackID", track.getId()); // value to store
+         }
+     }
+ 
+@@ -115,8 +117,8 @@
+         SharedPreferences mPrefs = getPreferences(MODE_PRIVATE);
+         String filePath = mPrefs.getString("filePath", null);
+         if (filePath != null) {
+-            int projectId = mPrefs.getInt("projectID", -1);
+-            int trackId = mPrefs.getInt("trackID", -1);
++            long projectId = mPrefs.getLong("projectID", -1);
++            long trackId = mPrefs.getLong("trackID", -1);
+             project = ((LoopDAWApp) getApplication()).projectList.get(projectId);
+             track = project.getClips().get(trackId);
+         }
+Index: app/src/main/java/name/eipi/loopdaw/model/Track.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/model/Track.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/model/Track.java	
+@@ -15,7 +15,9 @@
+         // no impl
+     }
+ 
+-    private int id;
++    private long id;
++    private String name;
++    private String notes;
+ 
+     private transient String filePath;
+ 
+@@ -32,14 +34,30 @@
+         this.numLoops = numLoops;
+     }
+ 
+-    public int getId() {
++    public long getId() {
+         return id;
+     }
+ 
+-    public void setId(int id) {
++    public void setId(long id) {
+         this.id = id;
+     }
+ 
++    public String getName() {
++        return name;
++    }
++
++    public void setName(String name) {
++        this.name = name;
++    }
++
++    public String getNotes() {
++        return notes;
++    }
++
++    public void setNotes(String notes) {
++        this.notes = notes;
++    }
++
+     public String getFileName() {
+         return filePath;
+     }
+@@ -72,18 +90,18 @@
+ 
+     public static Track newInstance(Project project) {
+         Track t = new Track();
+-        t.setId(project.getClips().size());
+-        t.setFilePath(project.getBaseFilePath() + "Track" + t.getId() + ".aac");
++        long id = System.currentTimeMillis();
++        t.setId(id);
++        t.setFilePath(project.getBaseFilePath() + id + ".aac");
+         return t;
+     }
+ 
+     public static Track reInstance(Project project, String trackName) {
+         Track t = new Track();
+         t.setFilePath(project.getBaseFilePath() + trackName);
+-        String start = trackName.replaceFirst("Track", "");
+-        String[] split = start.split("\\.");
++        String[] split = trackName.split("\\.");
+         String id = split[0];
+-        Integer trackId = Integer.parseInt(id);
++        long trackId = Long.valueOf(id);
+         t.setId(trackId);
+         return t;
+     }
+@@ -102,7 +120,7 @@
+ 
+     @Override
+     public int hashCode() {
+-        int result = id;
++        int result = Long.valueOf(id).hashCode();
+         result = 31 * result + (filePath != null ? filePath.hashCode() : 0);
+         return result;
+     }
+Index: app/src/main/res/layout/track_line_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/track_line_item.xml	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/res/layout/track_line_item.xml	
+@@ -1,73 +1,61 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
+     android:id="@+id/RelativeLayout1"
+     android:layout_width="fill_parent"
+-    android:layout_height="46dp"
+-    android:padding="8dp">
++    android:layout_height="60dp"
++    android:padding="6dp">
+ 
+-    <ImageView
+-        android:id="@+id/imgDelete"
+-        android:layout_width="30dp"
+-        android:layout_height="30dp"
+-        android:layout_alignParentRight="true"
+-        android:layout_alignParentTop="true"
+-        android:contentDescription="fav"
+-        android:src="@android:drawable/ic_delete"
+-        tools:ignore="HardcodedText"
+-        android:onClick="delete" />
+ 
+-    <ImageView
+-        android:id="@+id/record_button"
+-        android:layout_width="30dp"
+-        android:layout_height="30dp"
+-        android:layout_alignStart="@id/imgDelete"
+-        android:layout_alignParentTop="true"
+-        android:contentDescription="fav"
+-        android:src="@android:drawable/ic_delete"
+-        tools:ignore="HardcodedText"
+-        android:onClick="delete" />
+-
+-
+     <TextView
+         android:id="@+id/rowTrackName"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+-        android:layout_alignTop="@+id/RowImage"
+         android:layout_marginLeft="26dp"
+-        android:layout_toRightOf="@+id/RowImage"
+         android:gravity="center_vertical"
+-        android:text=""
++        android:text="Track name"
+         android:textSize="14sp"
+         android:textStyle="bold"
+-        tools:ignore="HardcodedText" />
++        tools:ignore="HardcodedText"
++        android:layout_alignParentTop="true"
++        android:layout_alignParentStart="true" />
+ 
+     <TextView
+         android:id="@+id/rowSubTitle"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+-        android:layout_alignBottom="@+id/RowImage"
+-        android:layout_alignLeft="@+id/rowProjectName"
+         android:gravity="center_vertical"
+-        android:text="Created on {dtm TODO}"
++        android:text="4:33, 2017-02-01, 15:43 "
+         android:textSize="11sp"
+         android:textStyle="bold"
+-        tools:ignore="HardcodedText,SmallSp" />
++        tools:ignore="HardcodedText,SmallSp"
++        android:layout_centerVertical="true"
++        android:layout_alignStart="@+id/rowTrackName" />
+ 
+-    <!--<TextView-->
+-        <!--android:id="@+id/rowDuration"-->
+-        <!--android:layout_width="wrap_content"-->
+-        <!--android:layout_height="wrap_content"-->
+-        <!--android:layout_alignBottom="@+id/imgDelete"-->
+-        <!--android:layout_marginRight="35dp"-->
+-        <!--android:layout_toLeftOf="@+id/imgDelete"-->
+-        <!--android:gravity="center_vertical"-->
+-        <!--android:text="3m 43s"-->
+-        <!--android:textColor="@color/textBGColor"-->
+-        <!--android:textSize="11sp"-->
+-        <!--android:textStyle="bold"-->
+-        <!--tools:ignore="HardcodedText,SmallSp" />-->
++    <ImageView
++        android:id="@+id/imgDeleteTrack"
++        android:layout_height="wrap_content"
++        app:srcCompat="@drawable/ic_remove_circle_black_24dp"
++        style="?android:attr/borderlessButtonStyle"
++        android:tint="@color/dark_grey"
++        android:onClick="delete"
++        android:scaleType="matrix"
++        android:layout_width="35dp"
++        android:cropToPadding="false"
++        android:layout_alignParentTop="true"
++        android:layout_alignParentEnd="true" />
+ 
+-
++    <ImageView
++        android:id="@+id/action_button"
++        android:layout_width="35dp"
++        android:layout_height="wrap_content"
++        app:srcCompat="@drawable/ic_fiber_manual_record_black_24dp"
++        style="?android:attr/borderlessButtonStyle"
++        android:tint="@color/dark_grey"
++        android:onClick="actionPlayRecord"
++        android:scaleType="matrix"
++        android:layout_alignParentTop="true"
++        android:layout_toStartOf="@+id/imgDeleteTrack" />
+ 
+ </RelativeLayout>
+\ No newline at end of file
+Index: app/src/main/java/name/eipi/loopdaw/activity/EditActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/activity/EditActivity.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/activity/EditActivity.java	
+@@ -5,6 +5,7 @@
+ import android.support.design.widget.FloatingActionButton;
+ import android.support.v7.app.AppCompatActivity;
+ import android.os.Bundle;
++import android.view.MenuItem;
+ import android.view.View;
+ import android.widget.Button;
+ import android.widget.ImageButton;
+@@ -34,7 +35,7 @@
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_edit);
+         Bundle extras = getIntent().getExtras();
+-        int projectContext = extras.getInt("projectID", -1);
++        long projectContext = extras.getLong("projectID", -1);
+         if (projectContext != -1) {
+             project = ((LoopDAWApp) getApplication()).projectList.get(projectContext);
+         }
+@@ -63,14 +64,13 @@
+ 
+     public void actionNewTrack(View view) {
+         Track track = Track.newInstance(project);
+-        project.getClips().add(track);
++        project.getClips().put(track.getId(), track);
+         TrackFragment.listAdapter.notifyDataSetChanged();
+-
+     }
+ 
+     public void actionPlay(View view) {
+ 
+-        ImageButton button = (ImageButton) view.findViewById(R.id.fab);
++        ImageButton button = (ImageButton) view.findViewById(R.id.play_button);
+         if (mStartPlaying) {
+             logger.msg("EditActivity.actionPlayAll - in mStartPlaying");
+             button.setImageResource(R.drawable.ic_stop_black_24dp);
+@@ -81,7 +81,7 @@
+         if (audioSession == null) {
+             audioSession = AudioSession.getInstance(this);
+         }
+-        audioSession.play(mStartPlaying, project); //todo-makeasync
++        audioSession.play(mStartPlaying, project);
+         mStartPlaying = !mStartPlaying;
+     }
+ 
+@@ -99,5 +99,24 @@
+ 
+     }
+ 
++//    @Override
++//    public boolean onOptionsItemSelected(MenuItem item) {
++//        switch (item.getItemId()) {
++//            case R.id.action_settings:
++//                // User chose the "Settings" item, show the app settings UI...
++//                return true;
++//
++//            case R.id.action_favorite:
++//                // User chose the "Favorite" action, mark the current item
++//                // as a favorite...
++//                return true;
++//
++//            default:
++//                // If we got here, the user's action was not recognized.
++//                // Invoke the superclass to handle it.
++//                return super.onOptionsItemSelected(item);
++//
++//        }
++//    }
+ 
+ }
+Index: app/src/main/java/name/eipi/loopdaw/fragment/TrackFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/fragment/TrackFragment.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/fragment/TrackFragment.java	
+@@ -11,6 +11,8 @@
+ import android.widget.ListView;
+ 
+ import java.io.File;
++import java.util.Arrays;
++import java.util.List;
+ 
+ import name.eipi.loopdaw.activity.BaseActivity;
+ import name.eipi.loopdaw.activity.RecordActivity;
+@@ -44,7 +46,13 @@
+     public void onCreate(Bundle savedInstanceState)
+     {
+         super.onCreate(savedInstanceState);
+-        listAdapter = new TrackListAdapter(activity, this, project.getClips());
++        if (project == null && savedInstanceState != null) {
++            long projectId = savedInstanceState.getLong("projectID", -1);
++            if (projectId != -1) {
++                project = ((LoopDAWApp) this.getActivity().getApplication()).projectList.get(projectId);
++            }
++        }
++        listAdapter = new TrackListAdapter(activity, this, project.getTrackList());
+         setListAdapter(listAdapter);
+     }
+ 
+@@ -65,8 +73,6 @@
+         this.activity = (BaseActivity) context;
+     }
+ 
+-
+-
+     @Override
+     public void onStart()
+     {
+@@ -83,7 +89,7 @@
+ 
+     private void onProjectDelete(final Track track)
+     {
+-        int stringName = track.getId();
++        String stringName = track.getName();
+         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+         builder.setMessage("Are you sure you want to Delete the \'Project\' " + stringName + "?");
+         builder.setCancelable(false);
+@@ -92,7 +98,7 @@
+         {
+             public void onClick(DialogInterface dialog, int id)
+             {
+-                project.getClips().remove(track); // remove from our list
++                project.getClips().remove(track.getId()); // remove from our list
+                 listAdapter.trackList.remove(track); // update adapters data
+                 listAdapter.notifyDataSetChanged(); // refresh adapter
+             }
+@@ -112,11 +118,11 @@
+         super.onListItemClick(l, v, position, id);
+         Activity host = (Activity) v.getContext();
+         LoopDAWApp app = (LoopDAWApp) host.getApplication();
+-        int projId = app.projectList.indexOf(project);
++        long projId = project.getId();
+ 
+         Bundle activityInfo = new Bundle(); // Creates a new Bundle object
+-        activityInfo.putInt("projectID", projId);
+-        activityInfo.putInt("trackID", position);
++        activityInfo.putLong("projectID", projId);
++        activityInfo.putLong("trackID", position);
+ 
+         String fName = project.getClips().get(position).getFileName();
+         File file;
+Index: app/src/main/java/name/eipi/loopdaw/adapter/ProjectListAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/adapter/ProjectListAdapter.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/adapter/ProjectListAdapter.java	
+@@ -33,7 +33,7 @@
+     public View getView(int position, View convertView, ViewGroup parent)
+     {
+         ProjectItem item = new ProjectItem(context, parent, deleteListener,
+-                projectList.get(position));
++                projectList.get(position), position);
+         return item.view;
+     }
+ 
+Index: app/src/main/java/name/eipi/loopdaw/activity/BaseActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/activity/BaseActivity.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/activity/BaseActivity.java	
+@@ -21,6 +21,7 @@
+ import name.eipi.loopdaw.fragment.TrackFragment;
+ import name.eipi.loopdaw.main.LoopDAWApp;
+ import name.eipi.loopdaw.model.Project;
++import name.eipi.loopdaw.model.Track;
+ 
+ /**
+  * Created by Damien on 19/02/2017.
+@@ -75,28 +76,27 @@
+         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+     }
+ 
+-    public void delete(View view) {
+-        if (view.getTag() instanceof Project) {
+-            Project project = (Project) view.getTag();
+-            app.projectList.remove(project);
+-            ProjectFragment.listAdapter.remove(project);
+-            ProjectFragment.listAdapter.notifyDataSetChanged();
+-        }
++//    public void delete(View view) {
++//        if (view.getTag() instanceof Project) {
++//            Project project = (Project) view.getTag();
++//            app.projectList.remove(project);
++//            ProjectFragment.listAdapter.remove(project);
++//            ProjectFragment.listAdapter.notifyDataSetChanged();
++//        }
++//    }
+ 
+-    }
+-
+     protected void createProject(final String projectName) {
+ 
+         if ((projectName.length() > 0)) {
+             Project c = new Project(projectName);
+             String baseFileDir = getExternalCacheDir().getAbsolutePath()
+-                    + File.separator + "projects" + File.separator + projectName + File.separator;
++                    + File.separator + "projects" + File.separator + c.getId() + File.separator;
+             c.setBaseFilePath(baseFileDir);
+             File file = new File(baseFileDir + "project.info");
+             file.getParentFile().mkdirs();
+-            app.projectList.add(c);
++            app.projectList.put(c.getId(), c);
+             Bundle activityInfo = new Bundle(); // Creates a new Bundle object
+-            activityInfo.putInt("projectID", app.projectList.indexOf(c));
++            activityInfo.putLong("projectID", c.getId());
+             goToActivity(this, EditActivity.class, activityInfo);
+         } else {
+             Toast.makeText(
+Index: app/src/main/java/name/eipi/loopdaw/main/LoopDAWApp.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/main/LoopDAWApp.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/main/LoopDAWApp.java	
+@@ -9,6 +9,12 @@
+ import java.io.File;
+ import java.io.IOException;
+ import java.util.ArrayList;
++import java.util.Arrays;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.SortedMap;
++import java.util.TreeMap;
+ 
+ import name.eipi.loopdaw.model.Project;
+ import name.eipi.loopdaw.model.Track;
+@@ -26,7 +32,7 @@
+         creDtm = System.currentTimeMillis();
+     }
+ 
+-    public ArrayList<Project> projectList = new ArrayList<Project>();
++    public SortedMap<Long, Project> projectList = new TreeMap<>();
+ 
+     public long getCreDtm(){
+         return creDtm;
+@@ -41,7 +47,6 @@
+         } catch (IOException  ex) {
+             ex.printStackTrace();
+         }
+-
+     }
+ 
+     public void initialize() throws IOException {
+@@ -51,9 +56,11 @@
+             File[] projects = projectsDir.listFiles();
+             for (File project : projects) {
+                 Project loadedProject = Project.create(projectsPath, project);
+-                projectList.add(loadedProject);
++                long projectId = Long.valueOf(project.getName());
++                projectList.put(projectId, loadedProject);
+                 for (File file : project.listFiles()) {
+-                    loadedProject.getClips().add(Track.reInstance(loadedProject, file.getName()));
++                    long trackId = Long.valueOf(file.getName().replace(".aac", ""));
++                    loadedProject.getClips().put(trackId, Track.reInstance(loadedProject, file.getName()));
+                 }
+             }
+         }
+@@ -62,7 +69,7 @@
+     @Override
+     public void onTerminate() {
+         super.onTerminate();
+-        for (Project project : projectList) {
++        for (Project project : projectList.values()) {
+             String objectString = new Gson().toJson(project);
+             System.out.println(objectString);
+         }
+@@ -72,6 +79,10 @@
+     protected void attachBaseContext(Context base) {
+         super.attachBaseContext(base);
+         MultiDex.install(this);
++    }
++
++    public List<Project> getProjectsList() {
++        return Arrays.asList(projectList.values().toArray(new Project[projectList.size()]));
+     }
+ 
+ }
+Index: app/src/main/java/name/eipi/loopdaw/activity/ViewerActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/activity/ViewerActivity.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/activity/ViewerActivity.java	
+@@ -22,9 +22,10 @@
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_viewer);
++
+         Bundle extras = getIntent().getExtras();
+-        int projectContext = extras.getInt("projectID", -1);
+-        int trackContext = extras.getInt("trackID", -1);
++        long projectContext = extras.getLong("projectID", -1);
++        long trackContext = extras.getLong("trackID", -1);
+         project = ((LoopDAWApp) getApplication()).projectList.get(projectContext);
+         track = (Track) project.getClips().get(trackContext);
+ 
+@@ -32,13 +33,11 @@
+         FragmentTransaction transaction = fragmentManager.beginTransaction();
+         transaction.add(R.id.viewer_frame, track.getWaveform());
+         transaction.commit();
+-
+     }
+ 
+-
+     public void backToProject(View view) {
+         Bundle activityInfo = new Bundle(); // Creates a new Bundle object
+-        activityInfo.putInt("projectID", ((LoopDAWApp) getApplication()).projectList.indexOf(project));
++        activityInfo.putLong("projectID", project.getId());
+         Intent goView = new Intent(this, EditActivity.class);
+         goView.putExtras(activityInfo);
+         this.startActivity(goView); // Launch the Intent
+Index: app/src/main/java/name/eipi/loopdaw/adapter/CardContentAdapter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/adapter/CardContentAdapter.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/adapter/CardContentAdapter.java	
+@@ -25,36 +25,32 @@
+ 
+ public class CardContentAdapter extends RecyclerView.Adapter<CardContentAdapter.CardViewHolder> {
+ 
+-    private final String[] mPlaces;
+-    private final String[] mPlaceDesc;
+-    private final Drawable[] mPlacePictures;
+-
+     private final List<Project> content;
+ 
+     public CardContentAdapter(Context context, final List contentIn) {
+         Resources resources = context.getResources();
+         // todo - replace with java-based resource injection.
+         content = contentIn;
+-        mPlaces = resources.getStringArray(R.array.places);
+-        mPlaceDesc = resources.getStringArray(R.array.place_desc);
+-        TypedArray a = resources.obtainTypedArray(R.array.places_picture);
+-        mPlacePictures = new Drawable[a.length()];
+-        for (int i = 0; i < mPlacePictures.length; i++) {
+-            //smPlacePictures[i] = a.getDrawable(i);
++//        mPlaces = resources.getStringArray(R.array.places);
++//        mPlaceDesc = resources.getStringArray(R.array.place_desc);
++//        TypedArray a = resources.obtainTypedArray(R.array.places_picture);
++//        mPlacePictures = new Drawable[a.length()];
++//        for (int i = 0; i < mPlacePictures.length; i++) {
++//            //smPlacePictures[i] = a.getDrawable(i);
++//        }
++//        a.recycle();
+-        }
++    }
+-        a.recycle();
+-    }
+ 
+     @Override
+     public CardViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+-        return new CardViewHolder(LayoutInflater.from(parent.getContext()), parent);
++        return new CardViewHolder(LayoutInflater.from(parent.getContext()), parent, content);
+ 
+     }
+ 
+     @Override
+     public void onBindViewHolder(CardViewHolder holder, int position) {
+ 
+-        holder.picture.setImageDrawable(mPlacePictures[position % mPlacePictures.length]);
++//        holder.picture.setImageDrawable(mPlacePictures[position % mPlacePictures.length]);
+         holder.name.setText(content.get(position).getName());
+         holder.description.setText(content.get(position).getClips().size() + " tracks");
+         holder.currentItem = content.get(position);
+@@ -74,7 +70,7 @@
+         public TextView name;
+         public TextView description;
+ 
+-        public CardViewHolder(LayoutInflater inflater, ViewGroup parent) {
++        public CardViewHolder(LayoutInflater inflater, ViewGroup parent, final List<Project> contentIn) {
+ 
+             super(inflater.inflate(R.layout.item_card, parent, false));
+             picture = (ImageView) itemView.findViewById(R.id.card_image);
+@@ -85,8 +81,7 @@
+                 @Override public void onClick(View v) {
+                     // item clicked
+                     Bundle activityInfo = new Bundle(); // Creates a new Bundle object
+-                    activityInfo.putInt("projectID", getAdapterPosition());
+-
++                    activityInfo.putLong("projectID", contentIn.get(getAdapterPosition()).getId());
+                     NavigationUtils.goToActivity(v.getContext(), EditActivity.class, activityInfo);
+                 }
+             });
+Index: app/src/main/java/name/eipi/loopdaw/AudioSession.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/name/eipi/loopdaw/AudioSession.java	(revision 1478454de69c7dcb2af0e5a82ff37b702cc30966)
++++ app/src/main/java/name/eipi/loopdaw/AudioSession.java	
+@@ -100,9 +100,9 @@
+         if (start) {
+             logger.msg("Starting to play tracks for project " + project.getName());
+             if (useSoundPool) {
+-                playAll(project.getClips());
++                playAll(project.getClips().values());
+             } else {
+-                for (Track t : project.getClips()) {
++                for (Track t : project.getClips().values()) {
+                     startPlaying(t);
+                 }
+             }
+@@ -110,7 +110,7 @@
+             if (useSoundPool) {
+                 stopAll();
+             } else {
+-                for (Track t : project.getClips()) {
++                for (Track t : project.getClips().values()) {
+                     stopPlaying(t);
+                 }
+             }
+@@ -202,7 +202,7 @@
+ 
+     }
+ 
+-    public void playAll(ArrayList<Track> clips) {
++    public void playAll(Collection<Track> clips) {
+ 
+         // Produces DataSource instances through which media data is loaded.
+         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "LoopDAW"));

@@ -18,11 +18,11 @@
         android:tint="@color/dark_grey"
         android:title="Sign in to Google"/>
 
-        <item
-            android:id="@+id/menu_signin__sc_btn"
-            android:icon="@drawable/ic_cloud_circle_black_24dp"
-        android:tint="@color/dark_grey"
-        android:title="Sign in to SoundCloud"/>
+        <!--<item-->
+            <!--android:id="@+id/menu_signin__sc_btn"-->
+            <!--android:icon="@drawable/ic_cloud_circle_black_24dp"-->
+        <!--android:tint="@color/dark_grey"-->
+        <!--android:title="Sign in to SoundCloud"/>-->
 
         <item
             android:id="@+id/menu_info_btn"

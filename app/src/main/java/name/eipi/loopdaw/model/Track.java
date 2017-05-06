@@ -17,6 +17,9 @@ public class Track implements Serializable {
 
     private int id;
 
+    private String name;
+    private String description;
+
     private transient String filePath;
 
     private int startTime;
@@ -40,7 +43,23 @@ public class Track implements Serializable {
         this.id = id;
     }
 
-    public String getFileName() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFilePath() {
         return filePath;
     }
 
@@ -73,15 +92,16 @@ public class Track implements Serializable {
     public static Track newInstance(Project project) {
         Track t = new Track();
         t.setId(project.getClips().size());
-        t.setFilePath(project.getBaseFilePath() + "Track" + t.getId() + ".aac");
+        //t.setId(System.currentTimeMillis());
+        t.setFilePath(project.getBaseFilePath() + t.getId() + ".aac");
         return t;
     }
 
     public static Track reInstance(Project project, String trackName) {
         Track t = new Track();
         t.setFilePath(project.getBaseFilePath() + trackName);
-        String start = trackName.replaceFirst("Track", "");
-        String[] split = start.split("\\.");
+        trackName = trackName.replaceFirst("Track", "");
+        String[] split = trackName.split("\\.");
         String id = split[0];
         Integer trackId = Integer.parseInt(id);
         t.setId(trackId);

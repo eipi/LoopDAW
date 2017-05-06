@@ -1,23 +1,12 @@
 package name.eipi.loopdaw.util;
 
-import android.media.MediaExtractor;
-import android.media.MediaFormat;
-
 import net.sourceforge.jaad.aac.Decoder;
 import net.sourceforge.jaad.aac.SampleBuffer;
 import net.sourceforge.jaad.mp4.MP4Container;
 import net.sourceforge.jaad.mp4.api.Frame;
-import net.sourceforge.jaad.mp4.od.DecoderSpecificInfo;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.IOError;
 import java.io.IOException;
-import java.net.URI;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -43,7 +32,7 @@ public class AudioMixer {
             Collection<Byte[]> byteArrayList = new ArrayList<>();
             for (Track track : project.getClips()) {
                 //MediaExtractor extractor = new MediaExtractor();
-                FileInputStream inputStream = new FileInputStream(track.getFileName());
+                FileInputStream inputStream = new FileInputStream(track.getFilePath());
 //                byte[] data = new byte[1024];
 //                while (inputStream.read(data) > 0) {
 //                    for (byte b : data) {

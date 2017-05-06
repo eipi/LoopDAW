@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 
@@ -80,11 +81,10 @@ public class RecordActivity extends BaseActivity {
     public void actionRecord(View v) {
 
         audioSession.record(mStartRecording, track);
-        Button button = (Button) v.findViewById(R.id.record_button);
+        ImageButton button = (ImageButton) v.findViewById(R.id.record_button);
         if (mStartRecording) {
-            button.setText("Stop recording");
+            button.setImageResource(R.drawable.ic_stop_black_24dp);
         } else {
-            button.setText("Start recording");
             Bundle activityInfo = new Bundle(); // Creates a new Bundle object
             activityInfo.putInt("projectID", ((LoopDAWApp) getApplication()).projectList.indexOf(project));
             activityInfo.putInt("trackID", track.getId());

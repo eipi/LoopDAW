@@ -28,7 +28,6 @@ import java.util.List;
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.fragment.CardContentFragment;
 import name.eipi.loopdaw.fragment.ListContentFragment;
-import name.eipi.loopdaw.fragment.TileContentFragment;
 import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.util.NavigationUtils;
 
@@ -180,8 +179,8 @@ public class MainActivity extends BaseActivity {
             openInfoDialog(this);
         } else if (id == R.id.menu_signin_btn) {
             goToActivity(this, SignInActivity.class, null);
-        } else if (id == R.id.menu_signin__sc_btn) {
-            goToActivity(this, SignInActivity.class, null);
+//        } else if (id == R.id.menu_signin__sc_btn) {
+//            goToActivity(this, SignInActivity.class, null);
         } else if (id == R.id.menu_logs) {
             goToActivity(this, LogViewActivity.class, null);
         }
@@ -193,7 +192,6 @@ public class MainActivity extends BaseActivity {
         LoopDAWApp thisApp = (LoopDAWApp) getApplication();
         Adapter adapter = new Adapter(getSupportFragmentManager());
 //        adapter.addFragment(new ListContentFragment(), "List");
-//        adapter.addFragment(new TileContentFragment(), "Tile");
         adapter.addFragment(new CardContentFragment(), "Projects");
         viewPager.setAdapter(adapter);
     }
@@ -225,6 +223,10 @@ public class MainActivity extends BaseActivity {
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
+    }
+
+    public void editProject(View v) {
+
     }
 
 }

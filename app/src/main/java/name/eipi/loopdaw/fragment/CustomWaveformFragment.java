@@ -24,7 +24,7 @@ public class CustomWaveformFragment extends WaveformFragment {
      */
     @Override
     public String getFileName() {
-        return track.getFileName();
+        return track.getFilePath();
     }
 
     @Override

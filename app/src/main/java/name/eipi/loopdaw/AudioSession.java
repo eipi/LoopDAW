@@ -1,6 +1,5 @@
 package name.eipi.loopdaw;
 
-import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -21,21 +20,21 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
-import com.google.android.exoplayer2.ui.PlaybackControlView;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.gms.common.api.BooleanResult;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import name.eipi.loopdaw.model.Project;
 import name.eipi.loopdaw.model.Track;
@@ -46,15 +45,17 @@ import name.eipi.loopdaw.util.LoopDAWLogger;
  */
 public class AudioSession {
 
-
-
-    private final static boolean useSoundPool = Boolean.TRUE;
-
     private final static LoopDAWLogger logger = LoopDAWLogger.getInstance();
 
     private final Context context;
 
-    private final SimpleExoPlayer player;
+    private final TrackSelector trackSelector;
+    private final LoadControl loadControl;
+
+    // Produces DataSource instances through which media data is loaded.
+    private final DataSource.Factory dataSourceFactory;
+    // Produces Extractor instances for parsing the media data.
+    private final ExtractorsFactory extractorsFactory;
 
     private AudioSession(Context ctx) {
         this.context = ctx;
@@ -63,21 +64,21 @@ public class AudioSession {
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory trackSelectionFactory =
                 new AdaptiveTrackSelection.Factory(bandwidthMeter);
-        TrackSelector trackSelector =
+        trackSelector =
                 new DefaultTrackSelector(trackSelectionFactory);
 
         // 2. Create a default LoadControl
-        LoadControl loadControl = new DefaultLoadControl();
+        loadControl = new DefaultLoadControl();
 
-        // 3. Create the player
-        player = ExoPlayerFactory.newSimpleInstance(context, trackSelector, loadControl);
-
-        PlaybackControlView view = (PlaybackControlView ) ((Activity) ctx).findViewById(R.id.player_view);
-
-        // Bind the player to the view.
-        if (view != null) {
-            view.setPlayer(player);
-        }
+        dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "LoopDAW"));
+        extractorsFactory = new DefaultExtractorsFactory();
+//
+//        PlaybackControlView view = (PlaybackControlView) ((Activity) ctx).findViewById(R.id.player_view);
+//
+//        // Bind the player to the view.
+//        if (view != null) {
+//            view.setPlayer(player);
+//        }
 
     }
 
@@ -86,7 +87,7 @@ public class AudioSession {
     }
 
     private MediaRecorder mRecorder = null;
-    private Map<Track, MediaPlayer> mediaPlayerMap = new HashMap<>();
+    private ConcurrentMap<Track, SimpleExoPlayer> mediaPlayerMap = new ConcurrentHashMap<>();
 
     public void record(boolean start, Track track) {
         if (start) {
@@ -99,36 +100,43 @@ public class AudioSession {
     public void play(boolean start, Project project) {
         if (start) {
             logger.msg("Starting to play tracks for project " + project.getName());
-            if (useSoundPool) {
-                playAll(project.getClips());
-            } else {
-                for (Track t : project.getClips()) {
-                    startPlaying(t);
-                }
+//                playAll(project.getClips());
+            for (Track t : project.getClips()) {
+                startPlaying(t);
             }
         } else {
-            if (useSoundPool) {
-                stopAll();
-            } else {
-                for (Track t : project.getClips()) {
-                    stopPlaying(t);
-                }
+//                stopAll();
+            for (SimpleExoPlayer s : mediaPlayerMap.values()) {
+                stopPlaying(s);
             }
+            mediaPlayerMap.clear();
+//            for (Track t : project.getClips()) {
+//                stopPlaying(t);
+//            }
+
         }
     }
 
     @Deprecated
     private void startPlaying(final Track track) {
-        logger.msg("Starting to play track " + track.getFileName() + " from " + track.getStartTime() + " to " + track.getEndTime());
-        final MediaPlayer mPlayer = new MediaPlayer();
-        mediaPlayerMap.put(track, mPlayer);
+        logger.msg("Starting to play track " + track.getFilePath() + " from " + track.getStartTime() + " to " + track.getEndTime());
+        SimpleExoPlayer player = ExoPlayerFactory.newSimpleInstance(context, trackSelector, loadControl);
+        mediaPlayerMap.put(track, player);
         try {
-            mPlayer.setDataSource(track.getFileName());
-            mPlayer.prepare();
-            mPlayer.seekTo(track.getStartTime());
-            mPlayer.start();
+            MediaSource audioSource = new ExtractorMediaSource(Uri.parse(new File(track.getFilePath()).toURI().toString()),
+                    dataSourceFactory, extractorsFactory, null, null);
+            LoopingMediaSource loopSource = new LoopingMediaSource(audioSource);
+            player.prepare(loopSource);
+            player.setPlayWhenReady(Boolean.TRUE);
+            player.seekTo(track.getStartTime());
+
+//            mPlayer.setDataSource(track.getFilePath());
+//            mPlayer.prepare();
+//            mPlayer.seekTo(track.getStartTime());
+//            mPlayer.start();
+
         } catch (Exception e) {
-            logger.msg(this.getClass().getSimpleName() + "prepare() for play failed : " + track.getFileName());
+            logger.msg(this.getClass().getSimpleName() + "prepare() for play failed : " + track.getFilePath());
         }
         if (track.getEndTime() != 0) {
             Handler mHandler = new Handler();
@@ -139,7 +147,7 @@ public class AudioSession {
                         startPlaying(track);
                         //mPlayer.stop();
                     } catch (Exception e) {
-                        logger.msg(this.getClass().getSimpleName() + "prepare() for stop failed : " + track.getFileName());
+                        logger.msg(this.getClass().getSimpleName() + "prepare() for stop failed : " + track.getFilePath());
                     }
                 }
             }, track.getEndTime() - track.getStartTime());
@@ -149,29 +157,40 @@ public class AudioSession {
 
     @Deprecated
     private void stopPlaying(Track track) {
-        MediaPlayer mPlayer = mediaPlayerMap.get(track);
+        SimpleExoPlayer mPlayer = mediaPlayerMap.get(track);
         if (mPlayer != null) {
-            if (mPlayer.isPlaying()) {
+//            if (mPlayer.isPlaying()) {
                 mPlayer.stop();
-            }
+//            }
             mPlayer.release();
             mPlayer = null;
         }
         mediaPlayerMap.remove(track);
     }
 
+    @Deprecated
+    private void stopPlaying(SimpleExoPlayer mPlayer) {
+        if (mPlayer != null) {
+//            if (mPlayer.isPlaying()) {
+            mPlayer.stop();
+//            }
+            mPlayer.release();
+            mPlayer = null;
+        }
+    }
+
     private void startRecording(Track track) {
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(track.getFileName());
+        mRecorder.setOutputFile(track.getFilePath());
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
 
         try {
             mRecorder.prepare();
             mRecorder.start();
         } catch (IllegalStateException | IOException e) {
-            logger.msg(this.getClass().getSimpleName() + " prepare() for record failed : " + track.getFileName());
+            logger.msg(this.getClass().getSimpleName() + " prepare() for record failed : " + track.getFilePath());
         }
 
     }
@@ -193,7 +212,7 @@ public class AudioSession {
             mRecorder = null;
         }
 
-        for (MediaPlayer mPlayer : mediaPlayerMap.values()) {
+        for (SimpleExoPlayer mPlayer : mediaPlayerMap.values()) {
             if (mPlayer != null) {
                 mPlayer.release();
                 mPlayer = null;
@@ -202,34 +221,29 @@ public class AudioSession {
 
     }
 
-    public void playAll(ArrayList<Track> clips) {
-
-        // Produces DataSource instances through which media data is loaded.
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(context, Util.getUserAgent(context, "LoopDAW"));
-        // Produces Extractor instances for parsing the media data.
-        ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-        // This is the MediaSource representing the media to be played.
-        Collection<LoopingMediaSource> loops = new ArrayList<>();
-        for (Track track : clips) {
-            MediaSource audioSource = new ExtractorMediaSource(Uri.parse(new File(track.getFileName()).toURI().toString()),
-                    dataSourceFactory, extractorsFactory, null, null);
-            LoopingMediaSource loopSource = new LoopingMediaSource(audioSource);
-            // Prepare the player with the source.
-            loops.add(loopSource);
-            //player.prepare(loopSource);
-        }
-        LoopingMediaSource[] loopingMediaSources = new LoopingMediaSource[loops.size()];
-        loops.toArray(loopingMediaSources);
-        MergingMediaSource ms = new MergingMediaSource(loopingMediaSources);
-//        player.prepare(ms);
-        // / Prepare the player with the source.
-        player.prepare(ms);
-        player.setPlayWhenReady(true);
-    }
-
-    public void stopAll() {
-        if (player != null) {
-            player.stop();
-        }
-    }
+//    public void playAll(ArrayList<Track> clips) {
+//        // This is the MediaSource representing the media to be played.
+//        for (Track track : clips) {
+//            MediaSource audioSource = new ExtractorMediaSource(Uri.parse(new File(track.getFilePath()).toURI().toString()),
+//                    dataSourceFactory, extractorsFactory, null, null);
+//            LoopingMediaSource loopSource = new LoopingMediaSource(audioSource);
+//
+//            // Prepare the player with the source.
+//            loops.add(loopSource);
+//            player.prepare(loopSource);
+//        }
+//        LoopingMediaSource[] loopingMediaSources = new LoopingMediaSource[loops.size()];
+//        loops.toArray(loopingMediaSources);
+//        MergingMediaSource ms = new MergingMediaSource(loopingMediaSources);
+//////        player.prepare(ms);
+////        // / Prepare the player with the source.
+////        player.prepare(ms);
+//        player.setPlayWhenReady(true);
+//    }
+//
+//    public void stopAll() {
+//        if (player != null) {
+//            player.stop();
+//        }
+//    }
 }

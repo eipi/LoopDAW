@@ -16,6 +16,7 @@ import android.widget.Toast;
 import java.io.File;
 
 import name.eipi.loopdaw.R;
+import name.eipi.loopdaw.adapter.CardContentAdapter;
 import name.eipi.loopdaw.fragment.ProjectFragment;
 import name.eipi.loopdaw.fragment.CustomWaveformFragment;
 import name.eipi.loopdaw.fragment.TrackFragment;
@@ -79,6 +80,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (view.getTag() instanceof Project) {
             Project project = (Project) view.getTag();
             app.projectList.remove(project);
+            // // TODO: 06/05/2017  
             ProjectFragment.listAdapter.remove(project);
             ProjectFragment.listAdapter.notifyDataSetChanged();
         }

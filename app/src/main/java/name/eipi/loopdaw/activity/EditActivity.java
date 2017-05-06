@@ -70,7 +70,7 @@ public class EditActivity extends BaseActivity {
 
     public void actionPlay(View view) {
 
-        ImageButton button = (ImageButton) view.findViewById(R.id.fab);
+        ImageButton button = (ImageButton) view.findViewById(R.id.play_button);
         if (mStartPlaying) {
             logger.msg("EditActivity.actionPlayAll - in mStartPlaying");
             button.setImageResource(R.drawable.ic_stop_black_24dp);
@@ -81,7 +81,7 @@ public class EditActivity extends BaseActivity {
         if (audioSession == null) {
             audioSession = AudioSession.getInstance(this);
         }
-        audioSession.play(mStartPlaying, project); //todo-makeasync
+        audioSession.play(mStartPlaying, project);
         mStartPlaying = !mStartPlaying;
     }
 

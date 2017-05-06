@@ -28,16 +28,16 @@ public class TrackItem {
 
 //        updateControls(track);
 
-        ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDelete);
+        ImageView imgDelete = (ImageView) view.findViewById(R.id.imgDeleteTrack);
         imgDelete.setTag(track);
         imgDelete.setOnClickListener(deleteListener);
     }
 
     private void updateControls(Track track) {
         ((TextView) view.findViewById(R.id.rowTrackName)).setText("Track" + track.getId());
-        ImageView imgIcon = (ImageView) view.findViewById(R.id.RowImage);
+        ImageView imgIcon = (ImageView) view.findViewById(R.id.fav_button);
 
-        if (track.getFileName() != null) {
+        if (track.getFilePath() != null) {
             imgIcon.setImageResource(R.drawable.ic_favourite_on);
         } else {
             imgIcon.setImageResource(R.drawable.ic_favourite_off);
