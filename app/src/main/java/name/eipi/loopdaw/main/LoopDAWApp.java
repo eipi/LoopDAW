@@ -7,8 +7,11 @@ import android.support.multidex.MultiDex;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import name.eipi.loopdaw.model.Project;
 import name.eipi.loopdaw.model.Track;
@@ -53,7 +56,9 @@ public class LoopDAWApp extends Application {
                 Project loadedProject = Project.create(projectsPath, project);
                 projectList.add(loadedProject);
                 for (File file : project.listFiles()) {
-                    loadedProject.getClips().add(Track.reInstance(loadedProject, file.getName()));
+                    if (file.getName().endsWith(".aac")) {
+                        Track.reInstance(loadedProject, file.getName());
+                    }
                 }
             }
         }
@@ -62,16 +67,64 @@ public class LoopDAWApp extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        for (Project project : projectList) {
-            String objectString = new Gson().toJson(project);
-            System.out.println(objectString);
-        }
+//        for (Project project : projectList) {
+//            String objectString = new Gson().toJson(project);
+//            File file = new File(project.getBaseFilePath() + "project.info");
+//            file.getParentFile().mkdirs();
+//            try {
+//                FileWriter fos = new FileWriter(file);
+//                fos.write(objectString);
+//                fos.close();
+//            } catch (Exception ex) {
+//                LoopDAWLogger.getInstance().msg(ex.getMessage());
+//                LoopDAWLogger.getInstance().msg(objectString);
+//
+//            }
+//        }
     }
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+    }
+
+    public List<Project> getFavourites() {
+        List<Project> favs = new ArrayList<>();
+        for (Project p : projectList) {
+            if (p.isFavourite()) {
+                favs.add(p);
+            }
+        }
+        return favs;
+    }
+
+    public List<Project> refreshFavs(final List<Project> favsIn) {
+        for (Project p : projectList) {
+            if (p.isFavourite()) {
+                if (!favsIn.contains(p)) {
+                    favsIn.add(p);
+                }
+            } else if (favsIn.contains(p)) {
+                favsIn.remove(p);
+            }
+        }
+        return favsIn;
+    }
+
+    public List<Project> getAllProjects() {
+        List<Project> all = new ArrayList<>();
+        all.addAll(projectList);
+        return all;
+    }
+
+    public void deleteProject(final Project project) {
+        File folder = new File(project.getBaseFilePath());
+        File[] files = folder.listFiles();
+        for (File file : files) {
+            file.delete();
+        }
+        folder.delete();
     }
 
 }

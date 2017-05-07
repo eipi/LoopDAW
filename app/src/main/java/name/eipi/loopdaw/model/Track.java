@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 
 import name.eipi.loopdaw.fragment.CustomWaveformFragment;
+import name.eipi.loopdaw.fragment.TrackFragment;
 
 /**
  * Created by Damien on 26/02/2017.
@@ -25,7 +26,18 @@ public class Track implements Serializable {
     private int startTime;
     private int endTime;
 
-    private int numLoops = 2;
+    private boolean mute;
+
+    public boolean isMute() {
+        return mute;
+    }
+
+    public void setMute(boolean mute) {
+        this.mute = mute;
+//        TrackFragment.getInstance().notifyDataChanged();
+    }
+
+    private int numLoops = Integer.MAX_VALUE;
 
     public int getNumLoops() {
         return numLoops;
@@ -97,15 +109,24 @@ public class Track implements Serializable {
         return t;
     }
 
-    public static Track reInstance(Project project, String trackName) {
-        Track t = new Track();
-        t.setFilePath(project.getBaseFilePath() + trackName);
+    public static void reInstance(Project project, String trackName) {
         trackName = trackName.replaceFirst("Track", "");
         String[] split = trackName.split("\\.");
         String id = split[0];
         Integer trackId = Integer.parseInt(id);
-        t.setId(trackId);
-        return t;
+        boolean found = false;
+        for (Track track : project.getClips()) {
+            if (track.getId() == trackId) {
+                track.setFilePath(project.getBaseFilePath() + trackName);
+                found = true;
+            }
+        }
+        if (!found) {
+            Track t = new Track();
+            t.setId(trackId);
+            t.setFilePath(project.getBaseFilePath() + trackName);
+            project.getClips().add(t);
+        }
     }
 
     @Override

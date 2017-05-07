@@ -2,17 +2,13 @@ package name.eipi.loopdaw.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import name.eipi.loopdaw.AudioSession;
 import name.eipi.loopdaw.R;
-import name.eipi.loopdaw.fragment.ProjectFragment;
 import name.eipi.loopdaw.fragment.TrackFragment;
 import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.model.Project;
@@ -58,13 +54,23 @@ public class EditActivity extends BaseActivity {
         } else {
             trackList.setText(null);
         }
+        project.save();
+        trackFragment.notifyDataChanged();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (audioSession == null) {
+            audioSession = AudioSession.getInstance(this);
+        }
+        audioSession.play(false, project);
     }
 
     public void actionNewTrack(View view) {
         Track track = Track.newInstance(project);
         project.getClips().add(track);
-        TrackFragment.listAdapter.notifyDataSetChanged();
+        trackFragment.notifyDataChanged();
 
     }
 

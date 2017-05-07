@@ -11,12 +11,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import name.eipi.loopdaw.AudioSession;
 import name.eipi.loopdaw.R;
@@ -34,7 +37,7 @@ public class RecordActivity extends BaseActivity {
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
 
     private AudioSession audioSession;
-
+    private Timer t;
     boolean mStartRecording = true;
     boolean mStartPlaying = true;
 
@@ -80,11 +83,15 @@ public class RecordActivity extends BaseActivity {
 
     public void actionRecord(View v) {
 
-        audioSession.record(mStartRecording, track);
+        audioSession.record(mStartRecording, track, project);
         ImageButton button = (ImageButton) v.findViewById(R.id.record_button);
+        ViewGroup row = (ViewGroup) v.getParent();
+        TextView textView = (TextView) row.findViewById(R.id.record_timer);
         if (mStartRecording) {
+            startTimer(textView);
             button.setImageResource(R.drawable.ic_stop_black_24dp);
         } else {
+            stopTimer();
             Bundle activityInfo = new Bundle(); // Creates a new Bundle object
             activityInfo.putInt("projectID", ((LoopDAWApp) getApplication()).projectList.indexOf(project));
             activityInfo.putInt("trackID", track.getId());
@@ -121,6 +128,48 @@ public class RecordActivity extends BaseActivity {
             track = project.getClips().get(trackId);
         }
 
+    }
+
+    private void stopTimer() {
+        if (t != null) {
+            t.cancel();
+        }
+    }
+
+    private void startTimer(final TextView textView) {
+        t = new Timer("hello", true);
+        t.schedule(new TimerTask() {
+            int tenths = 0, minute =0, seconds = 0, hour = 0;
+            @Override
+            public void run() {
+                textView.post(new Runnable() {
+
+                    public void run() {
+                        tenths ++;
+                        if (tenths == 10) {
+                            tenths = 0;
+                            seconds++;
+                        }
+                        if (seconds == 60) {
+                            seconds = 0;
+                            minute++;
+                        }
+                        if (minute == 60) {
+                            minute = 0;
+                            hour++;
+                        }
+                        textView.setText(""
+                                + (hour > 9 ? hour : ("0" + hour)) + " : "
+                                + (minute > 9 ? minute : ("0" + minute))
+                                + " : "
+                                + (seconds > 9 ? seconds : "0" + seconds)
+                                + ("." + tenths));
+
+                    }
+                });
+
+            }
+        }, 0, 100);
     }
 
 }

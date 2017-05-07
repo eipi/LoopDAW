@@ -15,7 +15,9 @@
  */
 package name.eipi.loopdaw.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ import android.view.ViewGroup;
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.adapter.CardContentAdapter;
 import name.eipi.loopdaw.main.LoopDAWApp;
+import name.eipi.loopdaw.model.Project;
 
 /**
  * Provides UI for the view with List.
@@ -49,4 +52,5 @@ public class ListContentFragment extends Fragment {
         return recyclerView;
 //        return inflater.inflate(R.layout.item_list, null);
     }
+
 }

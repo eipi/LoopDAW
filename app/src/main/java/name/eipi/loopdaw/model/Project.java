@@ -1,8 +1,17 @@
 package name.eipi.loopdaw.model;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import name.eipi.loopdaw.fragment.CardContentFragment;
+import name.eipi.loopdaw.fragment.FavsCardContentFragment;
+import name.eipi.loopdaw.util.LoopDAWLogger;
 
 /**
  * Created by avd1 on 07/02/2017.
@@ -42,7 +51,11 @@ public class Project implements Serializable, Comparable<Project> {
     }
 
     public void setDescription(String description) {
+
         this.description = description;
+        FavsCardContentFragment.adapter.notifyDataSetChanged();
+        CardContentFragment.adapter.notifyDataSetChanged();
+        save();
     }
 
     public boolean isFavourite() {
@@ -51,6 +64,9 @@ public class Project implements Serializable, Comparable<Project> {
 
     public void setFavourite(boolean favourite) {
         this.favourite = favourite;
+        FavsCardContentFragment.refreshFavs();
+        CardContentFragment.adapter.notifyDataSetChanged();
+        save();
     }
 
     public boolean isPublished() {
@@ -67,9 +83,27 @@ public class Project implements Serializable, Comparable<Project> {
     }
 
     public static Project create(String baseProjectsPath, File projectFile) {
-        Project project = new Project(projectFile.getName());
-        project.setBaseFilePath(baseProjectsPath + projectFile.getName() + File.separator);
-        return project;
+        File file = new File(baseProjectsPath + projectFile.getName() + File.separator + "project.info");
+        try {
+            FileReader reader = new FileReader(file);
+            BufferedReader buffer = new BufferedReader(reader);
+            StringBuilder sb = new StringBuilder();
+            while (buffer.ready()) {
+                sb.append(buffer.readLine());
+            }
+            buffer.close();
+            reader.close();
+
+            Project project = new Gson().fromJson(sb.toString(), Project.class);
+                    //new Project(projectFile.getName());
+            project.setBaseFilePath(baseProjectsPath + projectFile.getName() + File.separator);
+            return project;
+        } catch (Exception ex) {
+            LoopDAWLogger.getInstance().msg(ex.getMessage());
+            Project project = new Project(projectFile.getName());
+            project.setBaseFilePath(baseProjectsPath + projectFile.getName() + File.separator);
+            return project;
+        }
     }
 
     public ArrayList<Track> getClips() {
@@ -114,5 +148,20 @@ public class Project implements Serializable, Comparable<Project> {
             return -1;
         }
 
+    }
+
+    public void save() {
+        String objectString = new Gson().toJson(this);
+        File file = new File(this.getBaseFilePath() + "project.info");
+        file.getParentFile().mkdirs();
+        try {
+            FileWriter fos = new FileWriter(file);
+            fos.write(objectString);
+            fos.close();
+        } catch (Exception ex) {
+            LoopDAWLogger.getInstance().msg(ex.getMessage());
+            LoopDAWLogger.getInstance().msg(objectString);
+
+        }
     }
 }

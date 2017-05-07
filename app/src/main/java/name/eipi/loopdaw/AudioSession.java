@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Handler;
+import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -12,6 +13,7 @@ import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.source.ClippingMediaSource;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -44,6 +46,8 @@ import name.eipi.loopdaw.util.LoopDAWLogger;
  * Created by Damien on 25/02/2017.
  */
 public class AudioSession {
+
+    private final static Collection<SimpleExoPlayer> players = new ArrayList<>();
 
     private final static LoopDAWLogger logger = LoopDAWLogger.getInstance();
 
@@ -79,19 +83,21 @@ public class AudioSession {
 //        if (view != null) {
 //            view.setPlayer(player);
 //        }
-
+        mediaPlayerMap = new ConcurrentHashMap<>();
     }
 
     public static AudioSession getInstance(Context context) {
-        return new AudioSession(context);
+        AudioSession audioSession = new AudioSession(context);
+        return audioSession;
     }
 
     private MediaRecorder mRecorder = null;
-    private ConcurrentMap<Track, SimpleExoPlayer> mediaPlayerMap = new ConcurrentHashMap<>();
+    private ConcurrentMap<Track, SimpleExoPlayer> mediaPlayerMap;
 
-    public void record(boolean start, Track track) {
+
+    public void record(boolean start, Track track, Project project) {
         if (start) {
-            startRecording(track);
+            startRecording(track, project);
         } else {
             stopRecording();
         }
@@ -106,51 +112,63 @@ public class AudioSession {
             }
         } else {
 //                stopAll();
-            for (SimpleExoPlayer s : mediaPlayerMap.values()) {
+            for (SimpleExoPlayer s : players) {
                 stopPlaying(s);
             }
             mediaPlayerMap.clear();
 //            for (Track t : project.getClips()) {
 //                stopPlaying(t);
 //            }
+            players.clear();
 
         }
     }
 
     @Deprecated
     private void startPlaying(final Track track) {
-        logger.msg("Starting to play track " + track.getFilePath() + " from " + track.getStartTime() + " to " + track.getEndTime());
-        SimpleExoPlayer player = ExoPlayerFactory.newSimpleInstance(context, trackSelector, loadControl);
-        mediaPlayerMap.put(track, player);
-        try {
-            MediaSource audioSource = new ExtractorMediaSource(Uri.parse(new File(track.getFilePath()).toURI().toString()),
-                    dataSourceFactory, extractorsFactory, null, null);
-            LoopingMediaSource loopSource = new LoopingMediaSource(audioSource);
-            player.prepare(loopSource);
-            player.setPlayWhenReady(Boolean.TRUE);
-            player.seekTo(track.getStartTime());
+        if (!track.isMute()) {
+            logger.msg("Starting to play track " + track.getFilePath() + " from " + track.getStartTime() + " to " + track.getEndTime());
+            try {
+                MediaSource audioSource = new ExtractorMediaSource(Uri.parse(new File(track.getFilePath()).toURI().toString()),
+                        dataSourceFactory, extractorsFactory, null, null);
+                Long normailzedStartTime = Long.valueOf(track.getStartTime()) * 1000l;
+                Long normailzedEndTime = Long.valueOf(track.getEndTime()) * 1000l;
+                if (normailzedEndTime < 1) {
+                    normailzedEndTime = Long.MIN_VALUE;
+                }
 
+                ClippingMediaSource clip = new ClippingMediaSource(audioSource, normailzedStartTime, normailzedEndTime);
+                LoopingMediaSource loopSource = new LoopingMediaSource(clip);
+                SimpleExoPlayer player = ExoPlayerFactory.newSimpleInstance(context, trackSelector, loadControl);
+                player.prepare(loopSource);
+                mediaPlayerMap.put(track, player);
+                players.add(player);
+                player.setPlayWhenReady(Boolean.TRUE);
+//            player.seekTo(track.getStartTime());
+//
 //            mPlayer.setDataSource(track.getFilePath());
 //            mPlayer.prepare();
 //            mPlayer.seekTo(track.getStartTime());
 //            mPlayer.start();
 
-        } catch (Exception e) {
-            logger.msg(this.getClass().getSimpleName() + "prepare() for play failed : " + track.getFilePath());
-        }
-        if (track.getEndTime() != 0) {
-            Handler mHandler = new Handler();
-            mHandler.postDelayed(new Runnable() {
-                public void run() {
-                    try {
-                        stopPlaying(track);
-                        startPlaying(track);
-                        //mPlayer.stop();
-                    } catch (Exception e) {
-                        logger.msg(this.getClass().getSimpleName() + "prepare() for stop failed : " + track.getFilePath());
-                    }
-                }
-            }, track.getEndTime() - track.getStartTime());
+            } catch (Exception e) {
+                logger.msg(this.getClass().getSimpleName() + "prepare() for play failed : " + track.getFilePath());
+            }
+//        if (track.getEndTime() != 0) {
+//            Handler mHandler = new Handler();
+//            mHandler.postDelayed(new Runnable() {
+//                public void run() {
+//                    try {
+//                        stopPlaying(track);
+//                        startPlaying(track);
+//                        //mPlayer.stop();
+//                    } catch (Exception e) {
+//                        logger.msg(this.getClass().getSimpleName() + "prepare() for stop failed : " + track.getFilePath());
+//                    }
+//                }
+//            }, track.getEndTime() - track.getStartTime());
+//        }
+
         }
 
     }
@@ -159,13 +177,11 @@ public class AudioSession {
     private void stopPlaying(Track track) {
         SimpleExoPlayer mPlayer = mediaPlayerMap.get(track);
         if (mPlayer != null) {
-//            if (mPlayer.isPlaying()) {
-                mPlayer.stop();
-//            }
+            mPlayer.stop();
             mPlayer.release();
             mPlayer = null;
         }
-        mediaPlayerMap.remove(track);
+//        mediaPlayerMap.remove(track);
     }
 
     @Deprecated
@@ -179,7 +195,7 @@ public class AudioSession {
         }
     }
 
-    private void startRecording(Track track) {
+    private void startRecording(Track track, Project project) {
         mRecorder = new MediaRecorder();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -188,6 +204,7 @@ public class AudioSession {
 
         try {
             mRecorder.prepare();
+            //play(true, project);
             mRecorder.start();
         } catch (IllegalStateException | IOException e) {
             logger.msg(this.getClass().getSimpleName() + " prepare() for record failed : " + track.getFilePath());
@@ -198,6 +215,9 @@ public class AudioSession {
     private void stopRecording() {
         try {
             mRecorder.stop();
+//            for (SimpleExoPlayer s : mediaPlayerMap.values()) {
+//                stopPlaying(s);
+//            }
             mRecorder.release();
             mRecorder = null;
         } catch (IllegalStateException ex) {

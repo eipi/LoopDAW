@@ -16,7 +16,9 @@
 
 package name.eipi.loopdaw.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,10 +39,9 @@ import name.eipi.loopdaw.model.Project;
  */
 public class FavsCardContentFragment extends Fragment {
 
-    private LoopDAWApp app;
-    private List<Project> dataList;
-    private CardContentAdapter adapter;
-    private boolean isFavouritesOnly = false;
+    private static LoopDAWApp app;
+    public static List<Project> dataList;
+    public static CardContentAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,7 +50,7 @@ public class FavsCardContentFragment extends Fragment {
                 R.layout.recycler_view, container, false);
         Context context = recyclerView.getContext();
         app = (LoopDAWApp) context.getApplicationContext();
-        dataList = app.getAllProjects();
+        dataList = app.getFavourites();
         adapter = new CardContentAdapter(context, dataList);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
@@ -57,14 +58,9 @@ public class FavsCardContentFragment extends Fragment {
         return recyclerView;
     }
 
-//    @Override
-//    public void setArguments(final Bundle args) {
-//        super.setArguments(args);
-//        boolean isFavs = args.getBoolean("isFavouritesOnly", false);
-//        if (isFavs) {
-//            adapter
-//        }
-//        adapter.notifyDataSetChanged();
-//    }
+    public static void refreshFavs() {
+        app.refreshFavs(dataList);
+        adapter.notifyDataSetChanged();
+    }
 
 }

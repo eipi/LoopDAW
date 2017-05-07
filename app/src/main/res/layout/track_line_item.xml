@@ -19,15 +19,14 @@
         android:onClick="delete" />
 
     <ImageView
-        android:id="@+id/record_button"
+        android:id="@+id/imgMuteTrack"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_alignStart="@id/imgDelete"
-        android:layout_alignParentTop="true"
         android:contentDescription="fav"
-        android:src="@android:drawable/ic_delete"
+        android:src="@drawable/ic_mute"
         tools:ignore="HardcodedText"
-        android:onClick="delete" />
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/imgDeleteTrack" />
 
 
     <TextView

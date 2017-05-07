@@ -30,7 +30,7 @@ import name.eipi.loopdaw.model.Project;
 public abstract class BaseActivity extends AppCompatActivity {
 
     public LoopDAWApp app;
-    protected ProjectFragment projectFragment;
+//    protected ProjectFragment projectFragment;
     protected TrackFragment trackFragment;
 
     @Override
@@ -76,17 +76,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
-    public void delete(View view) {
-        if (view.getTag() instanceof Project) {
-            Project project = (Project) view.getTag();
-            app.projectList.remove(project);
-            // // TODO: 06/05/2017  
-            ProjectFragment.listAdapter.remove(project);
-            ProjectFragment.listAdapter.notifyDataSetChanged();
-        }
-
-    }
-
     protected void createProject(final String projectName) {
 
         if ((projectName.length() > 0)) {
@@ -96,6 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             c.setBaseFilePath(baseFileDir);
             File file = new File(baseFileDir + "project.info");
             file.getParentFile().mkdirs();
+            c.save();
             app.projectList.add(c);
             Bundle activityInfo = new Bundle(); // Creates a new Bundle object
             activityInfo.putInt("projectID", app.projectList.indexOf(c));

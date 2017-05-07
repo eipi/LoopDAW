@@ -1,5 +1,8 @@
 package name.eipi.loopdaw.fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+
 import com.semantive.waveformandroid.waveform.WaveformFragment;
 import com.semantive.waveformandroid.waveform.view.MarkerView;
 
@@ -27,13 +30,29 @@ public class CustomWaveformFragment extends WaveformFragment {
         return track.getFilePath();
     }
 
+
     @Override
-    public void markerTouchMove(MarkerView marker, float x) {
-        super.markerTouchMove(marker, x);
+    protected synchronized void updateDisplay() {
+        super.updateDisplay();
+        updateValues();
+    }
+
+//    @Override
+//    public void markerTouchMove(MarkerView marker, float x) {
+//        super.markerTouchMove(marker, x);
+////        updateValues();
+//        if (this.mWaveformView != null && this.mWaveformView.isInitialized()) {
+//            track.setStartTime(Double.valueOf(this.mWaveformView.pixelsToSeconds(this.mStartPos) * 1000).intValue());
+//            track.setEndTime(Double.valueOf(this.mWaveformView.pixelsToSeconds(this.mEndPos) * 1000).intValue());
+//        }
+//    }
+
+    private void updateValues() {
         if (this.mWaveformView != null && this.mWaveformView.isInitialized()) {
             track.setStartTime(Double.valueOf(this.mWaveformView.pixelsToSeconds(this.mStartPos) * 1000).intValue());
             track.setEndTime(Double.valueOf(this.mWaveformView.pixelsToSeconds(this.mEndPos) * 1000).intValue());
         }
+//        track.getProject().save();
 
     }
 
@@ -80,5 +99,36 @@ public class CustomWaveformFragment extends WaveformFragment {
         this.mProgressDialog.dismiss();
         this.updateDisplay();
     }
+
+    public TextWatcher mTextWatcher = new TextWatcher() {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+
+        public void afterTextChanged(Editable s) {
+            if(CustomWaveformFragment.this.mStartText.hasFocus()) {
+                try {
+                    CustomWaveformFragment.this.mStartPos = CustomWaveformFragment.this.mWaveformView.secondsToPixels(Double.parseDouble(CustomWaveformFragment.this.mStartText.getText().toString()));
+                    CustomWaveformFragment.this.updateDisplay();
+                    updateValues();
+                } catch (NumberFormatException var4) {
+                    ;
+                }
+            }
+
+            if(CustomWaveformFragment.this.mEndText.hasFocus()) {
+                try {
+                    CustomWaveformFragment.this.mEndPos = CustomWaveformFragment.this.mWaveformView.secondsToPixels(Double.parseDouble(CustomWaveformFragment.this.mEndText.getText().toString()));
+                    CustomWaveformFragment.this.updateDisplay();
+                    updateValues();
+                } catch (NumberFormatException var3) {
+                    ;
+                }
+            }
+
+        }
+    };
 
 }

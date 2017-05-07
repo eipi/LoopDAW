@@ -26,18 +26,15 @@ import name.eipi.loopdaw.model.Track;
 
 public class TrackFragment extends ListFragment implements View.OnClickListener {
 
-    private static final TrackFragment INSTANCE;
     protected BaseActivity activity;
-    public static TrackListAdapter listAdapter;
+    public TrackListAdapter listAdapter;
     protected ListView listView;
     private Project project;
 
-    static {
-        INSTANCE = new TrackFragment();
-    }
-
-    public TrackFragment getInstance() {
-        return INSTANCE;
+    public void notifyDataChanged() {
+        if (listAdapter != null) {
+            listAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -65,8 +62,6 @@ public class TrackFragment extends ListFragment implements View.OnClickListener 
         this.activity = (BaseActivity) context;
     }
 
-
-
     @Override
     public void onStart()
     {
@@ -77,15 +72,15 @@ public class TrackFragment extends ListFragment implements View.OnClickListener 
     public void onClick(View view) {
         if (view.getTag() instanceof Track)
         {
-            onProjectDelete ((Track) view.getTag());
+            onTrackDelete ((Track) view.getTag());
         }
     }
 
-    private void onProjectDelete(final Track track)
+    private void onTrackDelete(final Track track)
     {
         int stringName = track.getId();
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage("Are you sure you want to Delete the \'Project\' " + stringName + "?");
+        builder.setMessage("Are you sure you want to Delete the \'Track\' " + stringName + "?");
         builder.setCancelable(false);
 
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
@@ -95,6 +90,8 @@ public class TrackFragment extends ListFragment implements View.OnClickListener 
                 project.getClips().remove(track); // remove from our list
                 listAdapter.trackList.remove(track); // update adapters data
                 listAdapter.notifyDataSetChanged(); // refresh adapter
+                File trackFile = new File(track.getFilePath());
+                trackFile.delete();
             }
         }).setNegativeButton("No", new DialogInterface.OnClickListener()
         {

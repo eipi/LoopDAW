@@ -27,6 +27,7 @@ import java.util.List;
 
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.fragment.CardContentFragment;
+import name.eipi.loopdaw.fragment.FavsCardContentFragment;
 import name.eipi.loopdaw.fragment.ListContentFragment;
 import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.util.NavigationUtils;
@@ -192,7 +193,12 @@ public class MainActivity extends BaseActivity {
         LoopDAWApp thisApp = (LoopDAWApp) getApplication();
         Adapter adapter = new Adapter(getSupportFragmentManager());
 //        adapter.addFragment(new ListContentFragment(), "List");
-        adapter.addFragment(new CardContentFragment(), "Projects");
+        CardContentFragment allProjects = new CardContentFragment();
+        FavsCardContentFragment favourites = new FavsCardContentFragment();
+
+        adapter.addFragment(allProjects, "All Projects");
+        adapter.addFragment(favourites, "Favourites");
+
         viewPager.setAdapter(adapter);
     }
 

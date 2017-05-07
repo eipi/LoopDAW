@@ -16,7 +16,9 @@
 
 package name.eipi.loopdaw.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,9 +27,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.File;
+import java.util.List;
+
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.adapter.CardContentAdapter;
 import name.eipi.loopdaw.main.LoopDAWApp;
+import name.eipi.loopdaw.model.Project;
+import name.eipi.loopdaw.model.Track;
 
 /**
  * Provides UI for the view with Cards.
@@ -35,15 +42,19 @@ import name.eipi.loopdaw.main.LoopDAWApp;
 public class CardContentFragment extends Fragment {
 
     private LoopDAWApp app;
+    private RecyclerView recyclerView;
+    public static List<Project> dataList;
+    public static CardContentAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+        recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
         Context context = recyclerView.getContext();
         app = (LoopDAWApp) context.getApplicationContext();
-        CardContentAdapter adapter = new CardContentAdapter(context, app.projectList);
+        dataList = app.getAllProjects();
+        adapter = new CardContentAdapter(context, dataList);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
