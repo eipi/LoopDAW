@@ -16,14 +16,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.drive.Drive;
 
 import name.eipi.loopdaw.R;
+import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.util.LoopDAWLogger;
 
 /**
@@ -59,8 +62,12 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
         // [START configure_signin]
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestIdToken("LoopDAW")
+                .requestScopes(new Scope(Scopes.DRIVE_FILE))
                 .build();
         // [END configure_signin]
 
@@ -68,12 +75,13 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-//                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                //.addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .addApi(Drive.API).addScope(Drive.SCOPE_FILE)
                 .build();
         // [END build_client]
 
+        ((LoopDAWApp) getApplication()).mGoogleApiClient = mGoogleApiClient;
         // [START customize_button]
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
@@ -111,7 +119,9 @@ public class SignInActivity extends BaseActivity implements GoogleApiClient.OnCo
 
     // [START signIn]
     private void signIn() {
-        mGoogleApiClient.connect();
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+//        mGoogleApiClient.connect();
         app.mGoogleApiClient = mGoogleApiClient;
     }
     // [END signIn]

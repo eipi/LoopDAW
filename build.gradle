@@ -24,3 +24,22 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+//
+//signingConfigs {
+//    release {
+//        storeFile file("myreleasekey.keystore")
+//        storePassword "password"
+//        keyAlias "MyReleaseKey"
+//        keyPassword "password"
+//    }
+//}
+//
+//buildTypes {
+//    release {
+//
+//    }
+//    debug {
+//
+//        signingConfig signingConfigs.release
+//    }
+//}
