@@ -17,10 +17,19 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveFile;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.MetadataChangeSet;
+
 import java.util.List;
 
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.activity.EditActivity;
+import name.eipi.loopdaw.activity.SignInActivity;
 import name.eipi.loopdaw.fragment.CardContentFragment;
 import name.eipi.loopdaw.fragment.FavsCardContentFragment;
 import name.eipi.loopdaw.main.LoopDAWApp;
@@ -173,6 +182,35 @@ public class CardContentAdapter extends RecyclerView.Adapter<CardContentAdapter.
                     favouriteButton.setImageResource(project.isFavourite() ? R.drawable.ic_favorite_black_24dp : R.drawable.ic_favorite_border_black_24dp);
                 }
             });
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    // item clicked
+//                    final Project project = ((LoopDAWApp) (v.getContext().getApplicationContext())).projectList.get(getAdapterPosition());
+                    final Project project = projectList.get(getAdapterPosition());
+                    GoogleApiClient mGoogleApiClient = ((LoopDAWApp) v.getContext().getApplicationContext()).mGoogleApiClient;
+                    if (mGoogleApiClient != null) {
+                        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                                .setTitle("New folder").build();
+                        Drive.DriveApi.getRootFolder(mGoogleApiClient).createFolder(
+                                mGoogleApiClient, changeSet).setResultCallback(
+                                new ResultCallback<DriveFolder.DriveFolderResult>() {
+                                     @Override
+                                     public void onResult(DriveFolder.DriveFolderResult result) {
+                                         if (!result.getStatus().isSuccess()) {
+                                             //showMessage("Error while trying to create the folder");
+                                             return;
+                                         }
+                                         //showMessage("Created a folder: " + result.getDriveFolder().getDriveId());
+                                     }
+                                 });
+
+                    } else {
+                        NavigationUtils.goToActivity(v.getContext(), SignInActivity.class, null);
+                    }
+                }
+            });
+
+
         }
     }
 

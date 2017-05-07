@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -24,6 +25,8 @@ import name.eipi.loopdaw.util.LoopDAWLogger;
 public class LoopDAWApp extends Application {
 
     private static final long creDtm;
+
+    public GoogleApiClient mGoogleApiClient;
 
     static {
         creDtm = System.currentTimeMillis();
