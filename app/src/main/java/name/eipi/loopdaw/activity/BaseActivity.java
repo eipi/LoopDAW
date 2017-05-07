@@ -56,10 +56,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void openInfoDialog(Context current) {
         Dialog dialog = new Dialog(current);
         dialog.setTitle("About LoopDAW");
-//        dialog.setContentView(R.layout.info);
-//        TextView currentVersion = (TextView) dialog.findViewById(R.id.versionTextView);
-//        currentVersion.setText("1.0.0");
+        dialog.setContentView(R.layout.info);
+        TextView title = (TextView) dialog.findViewById(R.id.titleInfoView);
+        TextView text = (TextView) dialog.findViewById(R.id.textInfoView);
+        TextView link = (TextView) dialog.findViewById(R.id.linkInfoView);
 
+        title.setText("LoopDAW 1.0a, built on 5/17");
+        text.setText("To get started, create a project.  Add a track and record something.\n" +
+                "Trim the recording to a suitable loop, and then build on top of it!");
+        link.setText("http://www.eipi.name");
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
