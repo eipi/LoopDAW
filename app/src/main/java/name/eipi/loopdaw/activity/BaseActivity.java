@@ -17,13 +17,16 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.File;
 
+import name.eipi.loopdaw.AudioSession;
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.adapter.CardContentAdapter;
+import name.eipi.loopdaw.fragment.CardContentFragment;
 import name.eipi.loopdaw.fragment.ProjectFragment;
 import name.eipi.loopdaw.fragment.CustomWaveformFragment;
 import name.eipi.loopdaw.fragment.TrackFragment;
 import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.model.Project;
+import name.eipi.loopdaw.util.LoopDAWLogger;
 
 /**
  * Created by Damien on 19/02/2017.
@@ -65,7 +68,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         title.setText("LoopDAW 1.0a, built on 5/17");
         text.setText("To get started, create a project.  Add a track and record something.\n" +
-                "Trim the recording to a suitable loop, and then build on top of it!");
+                "Trim the recording to a suitable loop, and then build on top of it!\n\n" +
+                "Experimental mode is " + (AudioSession.isExperimentalMode() ? " enabled, careful now!" : "disabled."));
         link.setText("http://www.eipi.name");
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
@@ -96,6 +100,13 @@ public abstract class BaseActivity extends AppCompatActivity {
             app.projectList.add(c);
             Bundle activityInfo = new Bundle(); // Creates a new Bundle object
             activityInfo.putInt("projectID", app.projectList.indexOf(c));
+            if (CardContentFragment.adapter != null) {
+                try {
+                    CardContentFragment.adapter.notifyDataSetChanged();
+                } catch (Throwable t) {
+                    LoopDAWLogger.getInstance().msg(t.getMessage());
+                }
+            }
             goToActivity(this, EditActivity.class, activityInfo);
         } else {
             Toast.makeText(

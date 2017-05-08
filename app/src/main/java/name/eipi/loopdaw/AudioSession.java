@@ -51,6 +51,8 @@ public class AudioSession {
 
     private final static LoopDAWLogger logger = LoopDAWLogger.getInstance();
 
+    private static boolean experimentalMode = false;
+
     private final Context context;
 
     private final TrackSelector trackSelector;
@@ -60,6 +62,14 @@ public class AudioSession {
     private final DataSource.Factory dataSourceFactory;
     // Produces Extractor instances for parsing the media data.
     private final ExtractorsFactory extractorsFactory;
+
+    public static void toggleExperimentalMode() {
+        experimentalMode = !experimentalMode;
+    }
+
+    public static boolean isExperimentalMode() {
+        return experimentalMode;
+    }
 
     private AudioSession(Context ctx) {
         this.context = ctx;
@@ -154,23 +164,23 @@ public class AudioSession {
             } catch (Exception e) {
                 logger.msg(this.getClass().getSimpleName() + "prepare() for play failed : " + track.getFilePath());
             }
-//        if (track.getEndTime() != 0) {
-//            Handler mHandler = new Handler();
-//            mHandler.postDelayed(new Runnable() {
-//                public void run() {
-//                    try {
-//                        stopPlaying(track);
-//                        startPlaying(track);
-//                        //mPlayer.stop();
-//                    } catch (Exception e) {
-//                        logger.msg(this.getClass().getSimpleName() + "prepare() for stop failed : " + track.getFilePath());
-//                    }
-//                }
-//            }, track.getEndTime() - track.getStartTime());
-//        }
-
+            if (experimentalMode) {
+                if (track.getEndTime() != 0) {
+                    Handler mHandler = new Handler();
+                    mHandler.postDelayed(new Runnable() {
+                        public void run() {
+                            try {
+                                stopPlaying(track);
+                                startPlaying(track);
+                                //mPlayer.stop();
+                            } catch (Exception e) {
+                                logger.msg(this.getClass().getSimpleName() + "prepare() for stop failed : " + track.getFilePath());
+                            }
+                        }
+                    }, track.getEndTime() - track.getStartTime());
+                }
+            }
         }
-
     }
 
     @Deprecated

@@ -25,6 +25,7 @@ import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.List;
 
+import name.eipi.loopdaw.AudioSession;
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.fragment.CardContentFragment;
 import name.eipi.loopdaw.fragment.FavsCardContentFragment;
@@ -81,7 +82,7 @@ public class MainActivity extends BaseActivity {
                             int id = menuItem.getItemId();
 
         if (id == R.id.menu_home_btn) {
-            NavigationUtils.goToActivity(menuItem.getActionView().getContext(), MainActivity.class, null);
+//            NavigationUtils.goToActivity(menuItem.getActionView().getContext(), MainActivity.class, null);
         } else if (id == R.id.menu_info_btn) {
             openInfoDialog(navigationView.getContext());
 
@@ -91,6 +92,11 @@ public class MainActivity extends BaseActivity {
         } else if (id == R.id.menu_logs) {
             NavigationUtils.goToActivity(navigationView.getContext(), LogViewActivity.class, null);
 
+        } else if (id == R.id.menu_toggle_crazy_mode) {
+            AudioSession.toggleExperimentalMode();
+            if (menuItem.isCheckable()) {
+                menuItem.setChecked(!menuItem.isChecked());
+            }
         }
 
 //                            //noinspection SimplifiableIfStatement
@@ -119,7 +125,7 @@ public class MainActivity extends BaseActivity {
             FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(final View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                     builder.setTitle("New Project");
                     // I'm using fragment here so I'm using getView() to provide ViewGroup
@@ -136,7 +142,8 @@ public class MainActivity extends BaseActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             createProject(input.getText().toString());
-                            // todo - create the project.
+                            Snackbar.make(v, "Created new project \"" + input.getText().toString()
+                                            + "\"!", Snackbar.LENGTH_LONG).show();
                         }
                     });
                     builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -147,8 +154,6 @@ public class MainActivity extends BaseActivity {
                     });
 
                     builder.show();
-                    Snackbar.make(v, "Hello Snackbar!",
-                            Snackbar.LENGTH_LONG).show();
                 }
             });
         } catch (Throwable t) {
@@ -175,7 +180,7 @@ public class MainActivity extends BaseActivity {
         if (id == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
         } else if (id == R.id.menu_home_btn) {
-            NavigationUtils.goToActivity(this, MainActivity.class, null);
+//            NavigationUtils.goToActivity(this, MainActivity.class, null);
         } else if (id == R.id.menu_info_btn) {
             openInfoDialog(this);
         } else if (id == R.id.menu_signin_btn) {
@@ -184,6 +189,11 @@ public class MainActivity extends BaseActivity {
 //            goToActivity(this, SignInActivity.class, null);
         } else if (id == R.id.menu_logs) {
             goToActivity(this, LogViewActivity.class, null);
+        } else if (id == R.id.menu_toggle_crazy_mode) {
+            AudioSession.toggleExperimentalMode();
+            if (item.isCheckable()) {
+                item.setChecked(!item.isChecked());
+            }
         }
         return super.onOptionsItemSelected(item);
     }

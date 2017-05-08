@@ -135,7 +135,7 @@ public class CardContentAdapter extends RecyclerView.Adapter<CardContentAdapter.
                 return true;
             }});
             editButton.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
+                @Override public void onClick(final View v) {
                     // item clicked
                     final Project project = projectList.get(getAdapterPosition());
 //                    final Project project = ((LoopDAWApp) (v.getContext().getApplicationContext())).projectList.get(getAdapterPosition());
@@ -157,6 +157,8 @@ public class CardContentAdapter extends RecyclerView.Adapter<CardContentAdapter.
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             project.setDescription(descInput.getText().toString());
+                            Snackbar.make(v, "Project info saved!",
+                                    Snackbar.LENGTH_LONG).show();
                         }
                     });
                     builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -169,8 +171,7 @@ public class CardContentAdapter extends RecyclerView.Adapter<CardContentAdapter.
                     builder.show();
 
                     editButton.setImageResource((project.getDescription() != null && !project.getDescription().isEmpty()) ? R.drawable.ic_assignment_black_24dp : R.drawable.ic_edit_black_24dp);
-//                    Snackbar.make(v, "Hello Snackbar!",
-//                            Snackbar.LENGTH_LONG).show();
+
                 }
             });
             favouriteButton.setOnClickListener(new View.OnClickListener() {

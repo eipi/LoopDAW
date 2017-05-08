@@ -35,5 +35,13 @@
             android:icon="@drawable/ic_insert_drive_file_black_24dp"
             android:tint="@color/dark_grey"
             android:title="Logs"/>
+
+        <item
+        android:id="@+id/menu_toggle_crazy_mode"
+        android:icon="@drawable/ic_action_name"
+        android:tint="@color/dark_grey"
+        android:title="Toggle experimental mode!"
+        android:checkable="true" />
+
     </group>
 </menu>

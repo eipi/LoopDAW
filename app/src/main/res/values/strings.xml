@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">LoopDAW</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="title_text">LoopDAW Google SignIn</string>
+    <string name="title_text">Sign in to LoopDAW with Google</string>
 
     <!-- Strings related to Settings -->
 

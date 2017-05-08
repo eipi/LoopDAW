@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import java.io.File;
 
+import name.eipi.loopdaw.AudioSession;
 import name.eipi.loopdaw.activity.BaseActivity;
 import name.eipi.loopdaw.activity.RecordActivity;
 import name.eipi.loopdaw.activity.ViewerActivity;
@@ -41,9 +42,26 @@ public class TrackFragment extends ListFragment implements View.OnClickListener 
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        listAdapter = new TrackListAdapter(activity, this, project.getClips());
-        setListAdapter(listAdapter);
+        if (savedInstanceState != null) {
+            int projectId = savedInstanceState.getInt("projectID");
+            project = ((LoopDAWApp) activity.getApplication()).projectList.get(projectId);
+        }
+        if (project != null) {
+            listAdapter = new TrackListAdapter(activity, this, project.getClips());
+            setListAdapter(listAdapter);
+        }
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        savedInstanceState.putInt("projectID", (project != null) ? ((LoopDAWApp) activity.getApplication()).projectList.indexOf(project) : -1);
+        // etc.
+    }
+
 
     public TrackFragment() {
         // Required empty public constructor

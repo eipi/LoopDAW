@@ -29,7 +29,10 @@
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@color/primary_light"
+                app:tabIndicatorColor="@color/accent"
+                app:tabSelectedTextColor="@color/place_autocomplete_prediction_primary_text" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -46,7 +49,8 @@
             android:layout_gravity="right|bottom"
             android:layout_marginBottom="@dimen/md_keylines"
             android:layout_marginRight="@dimen/md_keylines"
-            android:src="@drawable/ic_add_circle_black_24dp" />
+            android:src="@drawable/ic_add_circle_black_24dp"
+            app:backgroundTint="@color/primary" />
 
     </android.support.design.widget.CoordinatorLayout>
 
