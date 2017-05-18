@@ -151,8 +151,6 @@ public class AudioSession {
                 LoopingMediaSource loopSource = new LoopingMediaSource(clip);
                 SimpleExoPlayer player = ExoPlayerFactory.newSimpleInstance(context, trackSelector, loadControl);
                 player.prepare(loopSource);
-                mediaPlayerMap.put(track, player);
-                players.add(player);
                 player.setPlayWhenReady(Boolean.TRUE);
 //            player.seekTo(track.getStartTime());
 //
@@ -183,7 +181,6 @@ public class AudioSession {
         }
     }
 
-    @Deprecated
     private void stopPlaying(Track track) {
         SimpleExoPlayer mPlayer = mediaPlayerMap.get(track);
         if (mPlayer != null) {
@@ -194,7 +191,6 @@ public class AudioSession {
 //        mediaPlayerMap.remove(track);
     }
 
-    @Deprecated
     private void stopPlaying(SimpleExoPlayer mPlayer) {
         if (mPlayer != null) {
 //            if (mPlayer.isPlaying()) {

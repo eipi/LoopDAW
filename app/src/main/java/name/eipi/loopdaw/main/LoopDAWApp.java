@@ -63,6 +63,12 @@ public class LoopDAWApp extends Application {
                         Track.reInstance(loadedProject, file.getName());
                     }
                 }
+                // Now re-init any new unused track holders.
+                for (Track track : loadedProject.getClips()) {
+                    if (track.getFilePath() == null) {
+                        track.setFilePath(loadedProject.getBaseFilePath() + track.getId() + ".aac");
+                    }
+                }
             }
         }
     }

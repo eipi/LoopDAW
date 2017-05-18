@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import name.eipi.loopdaw.AudioSession;
 import name.eipi.loopdaw.R;
 import name.eipi.loopdaw.adapter.CardContentAdapter;
 import name.eipi.loopdaw.fragment.CardContentFragment;
+import name.eipi.loopdaw.fragment.FavsCardContentFragment;
 import name.eipi.loopdaw.fragment.ProjectFragment;
 import name.eipi.loopdaw.fragment.CustomWaveformFragment;
 import name.eipi.loopdaw.fragment.TrackFragment;
@@ -98,15 +100,18 @@ public abstract class BaseActivity extends AppCompatActivity {
             file.getParentFile().mkdirs();
             c.save();
             app.projectList.add(c);
+            CardContentFragment.dataList.add(c);
             Bundle activityInfo = new Bundle(); // Creates a new Bundle object
             activityInfo.putInt("projectID", app.projectList.indexOf(c));
-            if (CardContentFragment.adapter != null) {
-                try {
-                    CardContentFragment.adapter.notifyDataSetChanged();
-                } catch (Throwable t) {
-                    LoopDAWLogger.getInstance().msg(t.getMessage());
-                }
-            }
+//            if (CardContentFragment.adapter != null) {
+//                try {
+//                    CardContentFragment.adapter.notifyDataSetChanged();
+//                } catch (Throwable t) {
+//                    LoopDAWLogger.getInstance().msg(t.getMessage());
+//                }
+//            }
+            FavsCardContentFragment.refreshFavs();
+            CardContentFragment.adapter.notifyDataSetChanged();
             goToActivity(this, EditActivity.class, activityInfo);
         } else {
             Toast.makeText(

@@ -65,11 +65,11 @@ public class EditActivity extends BaseActivity {
 
         trackList = (TextView) findViewById(R.id.trackListEmpty);
 
-        trackFragment = TrackFragment.newInstance(project);
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.track_fragment_layout, trackFragment);
-        transaction.commit();
+//        trackFragment = TrackFragment.newInstance(project);
+//        FragmentManager fragmentManager = getFragmentManager();
+//        FragmentTransaction transaction = fragmentManager.beginTransaction();
+//        transaction.add(R.id.track_fragment_layout, trackFragment);
+//        transaction.commit();
 
         if (project != null && trackList != null) {
             if (project.getClips().isEmpty()) {
@@ -204,6 +204,5 @@ public class EditActivity extends BaseActivity {
         //TODO - allow export of project data to Google Drive.
 
     }
-
 
 }

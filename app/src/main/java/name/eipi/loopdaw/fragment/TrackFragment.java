@@ -20,6 +20,7 @@ import name.eipi.loopdaw.adapter.TrackListAdapter;
 import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.model.Project;
 import name.eipi.loopdaw.model.Track;
+import name.eipi.loopdaw.util.LoopDAWLogger;
 
 /**
  * Created by avd1 on 07/02/2017.
@@ -108,8 +109,13 @@ public class TrackFragment extends ListFragment implements View.OnClickListener 
                 project.getClips().remove(track); // remove from our list
                 listAdapter.trackList.remove(track); // update adapters data
                 listAdapter.notifyDataSetChanged(); // refresh adapter
-                File trackFile = new File(track.getFilePath());
-                trackFile.delete();
+                try {
+                    File trackFile = new File(track.getFilePath());
+                    trackFile.delete();
+                    project.save();
+                } catch (Throwable t) {
+                    LoopDAWLogger.getInstance().msg(t.getMessage());
+                }
             }
         }).setNegativeButton("No", new DialogInterface.OnClickListener()
         {

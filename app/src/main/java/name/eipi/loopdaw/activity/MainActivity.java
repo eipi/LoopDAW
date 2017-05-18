@@ -142,8 +142,6 @@ public class MainActivity extends BaseActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             createProject(input.getText().toString());
-                            Snackbar.make(v, "Created new project \"" + input.getText().toString()
-                                            + "\"!", Snackbar.LENGTH_LONG).show();
                         }
                     });
                     builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

@@ -35,6 +35,7 @@ import name.eipi.loopdaw.adapter.CardContentAdapter;
 import name.eipi.loopdaw.main.LoopDAWApp;
 import name.eipi.loopdaw.model.Project;
 import name.eipi.loopdaw.model.Track;
+import name.eipi.loopdaw.util.LoopDAWLogger;
 
 /**
  * Provides UI for the view with Cards.
@@ -59,6 +60,18 @@ public class CardContentFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return recyclerView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            FavsCardContentFragment.refreshFavs();
+            CardContentFragment.adapter.notifyDataSetChanged();
+        } catch (Throwable t) {
+            LoopDAWLogger.getInstance().msg(t.getMessage());
+        }
+
     }
 
 }

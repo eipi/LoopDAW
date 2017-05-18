@@ -35,8 +35,8 @@ public class ViewerActivity extends AppCompatActivity {
 
     }
 
-
-    public void backToProject(View view) {
+    @Override
+    public void onBackPressed() {
         Bundle activityInfo = new Bundle(); // Creates a new Bundle object
         activityInfo.putInt("projectID", ((LoopDAWApp) getApplication()).projectList.indexOf(project));
         Intent goView = new Intent(this, EditActivity.class);
